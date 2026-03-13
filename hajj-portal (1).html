@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KTN Hajj Group — Pilgrim Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════ KTN BRAND VARIABLES ═══════════════ */
+:root {
+  --red:        #7E2320;
+  --red-dark:   #55141A;
+  --red-light:  #9B3330;
+  --grey:       #6B6B6B;
+  --grey-light: #9A9A9A;
+  --grey-bg:    #E8E8E8;
+  --black:      #000000;
+  --white:      #FFFFFF;
+  --bg:         #F2F0EE;
+  --bg-card:    #FFFFFF;
+  --text:       #1A1A1A;
+  --text-mid:   #4A4A4A;
+  --text-light: #6B6B6B;
+  --green:      #1E6B3A;
+  --green-bg:   rgba(30,107,58,0.08);
+  --border:     rgba(0,0,0,0.08);
+  --shadow:     0 4px 24px rgba(0,0,0,0.08);
+  --shadow-lg:  0 12px 48px rgba(0,0,0,0.14);
+  --r:          12px;
+  --r-sm:       8px;
+}
+
+/* ═══════════════ KTN ARCH PATTERN (SVG) ═══════════════ */
+.ktn-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M40 8 Q16 22 16 44 Q16 56 26 58 Q33 60 40 54 Q47 60 54 58 Q64 56 64 44 Q64 22 40 8Z' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='1.2'/%3E%3Cpath d='M0 80 Q20 62 40 54 Q60 62 80 80' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='1'/%3E%3Cpath d='M16 44 Q10 54 0 58' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1'/%3E%3Cpath d='M64 44 Q70 54 80 58' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1'/%3E%3C/svg%3E");
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { font-family:'Lato',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
+
+/* ═══════════════ SCROLLBAR ═══════════════ */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(126,35,32,0.25); border-radius:10px; }
+
+/* ═══════════════ KTN LOGO ═══════════════ */
+.ktn-logo { display:flex; flex-direction:column; gap:2px; }
+.ktn-logo .ktn-wordmark {
+  font-family:'Lato',sans-serif; font-weight:900; font-size:28px;
+  line-height:1; display:flex; align-items:center; gap:1px;
+}
+.ktn-logo .ktn-wordmark .k { color:var(--white); }
+.ktn-logo .ktn-wordmark .t { color:var(--grey-light); }
+.ktn-logo .ktn-wordmark .n { color:var(--white); }
+.ktn-logo .ktn-wordmark .plane { color:var(--red-light); font-size:14px; margin-left:2px; transform:rotate(-30deg); display:inline-block; }
+.ktn-logo .ktn-sub { font-size:9px; letter-spacing:1.8px; color:rgba(255,255,255,0.45); text-transform:uppercase; line-height:1.2; }
+
+.ktn-logo-sm .ktn-wordmark { font-size:20px; }
+.ktn-logo-sm .ktn-sub { font-size:8px; }
+
+/* ═══════════════ LOGIN ═══════════════ */
+#loginPage {
+  position:fixed; inset:0; z-index:200;
+  background:var(--red-dark);
+  display:flex; align-items:center; justify-content:center;
+  transition:opacity .5s, transform .5s;
+}
+#loginPage.hidden { opacity:0; pointer-events:none; transform:scale(1.03); }
+
+.login-wrap {
+  display:grid; grid-template-columns:1fr 1fr;
+  width:900px; max-width:96vw;
+  border-radius:20px; overflow:hidden;
+  box-shadow:0 40px 100px rgba(0,0,0,0.45);
+}
+.login-left {
+  background:var(--red);
+  padding:56px 48px;
+  display:flex; flex-direction:column; justify-content:space-between;
+  position:relative; overflow:hidden;
+}
+.login-left::before {
+  content:''; position:absolute; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M40 8 Q16 22 16 44 Q16 56 26 58 Q33 60 40 54 Q47 60 54 58 Q64 56 64 44 Q64 22 40 8Z' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='1.2'/%3E%3Cpath d='M0 80 Q20 62 40 54 Q60 62 80 80' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='1'/%3E%3C/svg%3E");
+  pointer-events:none;
+}
+.login-left .ll-top { position:relative; z-index:1; }
+.login-left .ll-top h2 {
+  font-family:'Playfair Display',serif; font-size:32px; font-weight:700;
+  color:white; line-height:1.25; margin-top:28px;
+}
+.login-left .ll-top p { color:rgba(255,255,255,0.5); font-size:14px; margin-top:10px; line-height:1.6; }
+.login-left .ll-bottom { position:relative; z-index:1; }
+.login-left .ll-bottom .tagline {
+  font-family:'Playfair Display',serif; font-style:italic;
+  font-size:15px; color:rgba(255,255,255,0.35); line-height:1.6;
+}
+
+.login-right {
+  background:white; padding:48px 44px;
+  display:flex; flex-direction:column; justify-content:center;
+}
+.login-tabs { display:flex; gap:0; margin-bottom:32px; border:1px solid var(--border); border-radius:var(--r-sm); overflow:hidden; }
+.login-tab {
+  flex:1; padding:11px; text-align:center; cursor:pointer;
+  font-size:13px; font-weight:700; letter-spacing:.5px; transition:all .2s;
+  color:var(--text-light); background:var(--bg);
+}
+.login-tab.active { background:var(--red); color:white; }
+.lf-label { font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--grey); margin-bottom:6px; display:block; }
+.lf-input {
+  width:100%; padding:13px 15px; border:1.5px solid var(--border);
+  border-radius:var(--r-sm); font-family:'Lato',sans-serif; font-size:14px;
+  color:var(--text); outline:none; transition:border .25s; margin-bottom:16px; background:white;
+}
+.lf-input:focus { border-color:var(--red); }
+.btn-login-main {
+  width:100%; padding:15px; background:var(--red);
+  color:white; border:none; border-radius:var(--r-sm);
+  font-family:'Lato',sans-serif; font-size:14px; font-weight:700;
+  letter-spacing:1px; cursor:pointer; transition:all .25s;
+  box-shadow:0 4px 16px rgba(126,35,32,0.35);
+}
+.btn-login-main:hover { background:var(--red-dark); transform:translateY(-1px); box-shadow:0 8px 24px rgba(126,35,32,0.45); }
+.login-hint { text-align:center; font-size:11px; color:var(--text-light); margin-top:16px; }
+
+/* ═══════════════ LAYOUT ═══════════════ */
+#appShell { display:none; min-height:100vh; }
+#appShell.active { display:flex; }
+
+.sidebar {
+  width:268px; min-height:100vh; position:fixed;
+  top:0; left:0; bottom:0; z-index:80;
+  background:var(--red-dark);
+  display:flex; flex-direction:column;
+  border-right:1px solid rgba(255,255,255,0.06);
+  box-shadow:4px 0 24px rgba(0,0,0,0.2);
+}
+.sidebar::before {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M40 8 Q16 22 16 44 Q16 56 26 58 Q33 60 40 54 Q47 60 54 58 Q64 56 64 44 Q64 22 40 8Z' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='1'/%3E%3Cpath d='M0 80 Q20 62 40 54 Q60 62 80 80' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1'/%3E%3C/svg%3E");
+  opacity:.7;
+}
+.sb-head {
+  padding:24px 20px 18px; border-bottom:1px solid rgba(255,255,255,0.07);
+  position:relative; z-index:1;
+}
+.sb-profile {
+  margin:14px 14px 0; padding:12px 14px;
+  background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);
+  border-radius:var(--r-sm); position:relative; z-index:1;
+}
+.sb-profile .sp-mode { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.35); }
+.sb-profile .sp-name { font-size:14px; color:white; font-weight:700; margin:3px 0 2px; }
+.sb-profile .sp-pkg { font-size:11px; color:rgba(255,255,255,0.4); }
+
+.sb-nav { padding:12px 10px; flex:1; overflow-y:auto; position:relative; z-index:1; }
+.sb-section { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.25); padding:12px 10px 4px; }
+.nav-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px; border-radius:var(--r-sm);
+  cursor:pointer; color:rgba(255,255,255,0.5); font-size:13px;
+  margin-bottom:1px; transition:all .2s; position:relative;
+}
+.nav-item:hover { background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.85); }
+.nav-item.active { background:rgba(255,255,255,0.12); color:white; }
+.nav-item.active::before {
+  content:''; position:absolute; left:0; top:20%; bottom:20%;
+  width:3px; background:white; border-radius:0 3px 3px 0;
+}
+.nav-item .ni { font-size:16px; width:20px; text-align:center; flex-shrink:0; }
+.nav-badge {
+  margin-left:auto; font-size:10px; font-weight:700;
+  padding:2px 7px; border-radius:20px;
+  background:var(--red-light); color:white;
+}
+.nav-badge.alert { background:#C0392B; }
+.sb-foot { padding:12px; border-top:1px solid rgba(255,255,255,0.07); position:relative; z-index:1; }
+.btn-logout {
+  width:100%; padding:9px; font-family:'Lato',sans-serif; font-size:12px;
+  background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+  color:rgba(255,255,255,0.5); border-radius:var(--r-sm); cursor:pointer; transition:all .2s;
+}
+.btn-logout:hover { background:rgba(255,255,255,0.12); color:white; }
+
+.main { margin-left:268px; flex:1; min-height:100vh; background:var(--bg); }
+
+.topbar {
+  height:62px; background:white; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 32px; position:sticky; top:0; z-index:50;
+  box-shadow:0 2px 16px rgba(0,0,0,0.04);
+}
+.topbar-left { display:flex; align-items:center; gap:10px; }
+.topbar-mode {
+  font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  padding:4px 10px; border-radius:20px;
+}
+.topbar-mode.admin { background:rgba(126,35,32,0.1); color:var(--red); }
+.topbar-mode.pilgrim { background:rgba(30,107,58,0.1); color:var(--green); }
+.topbar-title { font-family:'Playfair Display',serif; font-size:18px; color:var(--red-dark); font-weight:600; }
+.topbar-right { display:flex; align-items:center; gap:10px; }
+.tb-icon {
+  width:38px; height:38px; border-radius:var(--r-sm);
+  background:var(--bg); border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  font-size:17px; position:relative; transition:background .2s;
+}
+.tb-icon:hover { background:var(--grey-bg); }
+.tb-dot { position:absolute; top:7px; right:7px; width:7px; height:7px; background:#C0392B; border-radius:50%; border:2px solid white; }
+.tb-avatar {
+  width:38px; height:38px; border-radius:var(--r-sm);
+  background:var(--red); color:white; font-weight:900; font-size:14px;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+}
+
+.content { padding:28px 32px; }
+.page { display:none; animation:fadeUp .35s cubic-bezier(.16,1,.3,1); }
+.page.active { display:block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+/* ═══════════════ SHARED COMPONENTS ═══════════════ */
+.ph { margin-bottom:24px; }
+.ph h2 { font-family:'Playfair Display',serif; font-size:26px; color:var(--red-dark); font-weight:700; }
+.ph-line { width:40px; height:3px; background:var(--red); border-radius:2px; margin:8px 0; }
+.ph p { color:var(--text-light); font-size:14px; }
+
+.card {
+  background:var(--bg-card); border-radius:var(--r); padding:24px;
+  box-shadow:var(--shadow); border:1px solid var(--border); margin-bottom:20px;
+  transition:box-shadow .25s;
+}
+.card:hover { box-shadow:0 8px 32px rgba(0,0,0,0.1); }
+.card-hd {
+  font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+  color:var(--red-dark); margin-bottom:18px; display:flex; align-items:center; gap:8px;
+}
+
+.btn {
+  padding:11px 22px; border:none; border-radius:var(--r-sm);
+  font-family:'Lato',sans-serif; font-size:13px; font-weight:700;
+  cursor:pointer; transition:all .25s; display:inline-flex; align-items:center; gap:7px;
+}
+.btn-red { background:var(--red); color:white; box-shadow:0 4px 14px rgba(126,35,32,0.3); }
+.btn-red:hover { background:var(--red-dark); transform:translateY(-1px); box-shadow:0 6px 20px rgba(126,35,32,0.4); }
+.btn-outline { background:white; color:var(--red); border:1.5px solid var(--red); }
+.btn-outline:hover { background:var(--red); color:white; }
+.btn-grey { background:var(--bg); color:var(--text-mid); border:1px solid var(--border); }
+.btn-grey:hover { background:var(--grey-bg); }
+.btn-green { background:var(--green); color:white; }
+.btn-sm { padding:8px 14px; font-size:12px; }
+.btn-wa { background:#25D366; color:white; font-size:12px; padding:8px 14px; }
+.btn-wa:hover { background:#1da851; }
+
+.badge { display:inline-block; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; }
+.badge-red { background:rgba(126,35,32,0.1); color:var(--red); }
+.badge-green { background:rgba(30,107,58,0.1); color:var(--green); }
+.badge-grey { background:rgba(107,107,107,0.1); color:var(--grey); }
+.badge-orange { background:rgba(200,100,0,0.1); color:#C86400; }
+
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.form-row.cols3 { grid-template-columns:1fr 1fr 1fr; }
+.form-row.full { grid-column:1/-1; }
+.fg { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
+.fg label { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--grey); }
+.fg input, .fg select, .fg textarea {
+  padding:11px 14px; border:1.5px solid var(--border); border-radius:var(--r-sm);
+  font-family:'Lato',sans-serif; font-size:14px; color:var(--text);
+  background:white; outline:none; transition:border .25s;
+}
+.fg input:focus, .fg select:focus, .fg textarea:focus { border-color:var(--red); }
+.fg textarea { resize:vertical; min-height:80px; }
+
+.upload-zone {
+  border:2px dashed rgba(126,35,32,0.25); border-radius:var(--r);
+  padding:32px; text-align:center; cursor:pointer; transition:all .25s;
+  background:rgba(126,35,32,0.02);
+}
+.upload-zone:hover { border-color:var(--red); background:rgba(126,35,32,0.04); }
+.upload-zone input { display:none; }
+
+.tbl { width:100%; border-collapse:collapse; font-size:13px; }
+.tbl th { background:var(--bg); padding:11px 14px; text-align:left; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--grey); font-weight:700; border-bottom:2px solid var(--border); }
+.tbl td { padding:12px 14px; border-bottom:1px solid rgba(0,0,0,0.04); vertical-align:middle; }
+.tbl tr:hover td { background:rgba(242,240,238,0.7); }
+.tbl tr:last-child td { border-bottom:none; }
+
+.stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px; }
+.stat-card {
+  background:white; border-radius:var(--r); padding:20px;
+  border:1px solid var(--border); box-shadow:var(--shadow);
+}
+.stat-card .sc-val { font-family:'Playfair Display',serif; font-size:30px; color:var(--red-dark); font-weight:700; margin:6px 0 2px; }
+.stat-card .sc-label { font-size:11px; color:var(--text-light); letter-spacing:.5px; text-transform:uppercase; }
+.stat-card .sc-sub { font-size:12px; color:var(--text-light); margin-top:4px; }
+.stat-card.red-card { background:var(--red); }
+.stat-card.red-card .sc-val, .stat-card.red-card .sc-label, .stat-card.red-card .sc-sub { color:white; }
+.stat-card.red-card .sc-label { color:rgba(255,255,255,0.6); }
+.stat-card.red-card .sc-sub { color:rgba(255,255,255,0.5); }
+
+.doc-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+.doc-dot.ok { background:#1E6B3A; }
+.doc-dot.miss { background:#C0392B; }
+.doc-dot.partial { background:#C86400; }
+
+/* ═══════════════ FILTER BAR ═══════════════ */
+.filter-bar {
+  display:flex; gap:10px; flex-wrap:wrap;
+  background:white; padding:14px 16px; border-radius:var(--r);
+  margin-bottom:16px; border:1px solid var(--border);
+  align-items:center;
+}
+.filter-bar select, .filter-bar input {
+  padding:8px 12px; border:1.5px solid var(--border); border-radius:var(--r-sm);
+  font-family:'Lato',sans-serif; font-size:13px; color:var(--text);
+  background:white; outline:none; min-width:140px;
+}
+.filter-bar select:focus, .filter-bar input:focus { border-color:var(--red); }
+
+/* ═══════════════ PAYMENT TRACKER ═══════════════ */
+.pay-milestone {
+  background:var(--bg); border-radius:var(--r-sm); padding:16px 18px;
+  margin-bottom:12px; border-left:3px solid var(--border);
+}
+.pay-milestone.complete { border-left-color:var(--green); }
+.pay-milestone.overdue { border-left-color:#C0392B; }
+.pay-milestone.upcoming { border-left-color:#C86400; }
+.pm-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.pm-title { font-weight:700; font-size:14px; color:var(--text); }
+.pm-amount { font-family:'Playfair Display',serif; font-size:18px; color:var(--red-dark); font-weight:700; }
+.pm-progress { height:6px; background:rgba(0,0,0,0.08); border-radius:3px; overflow:hidden; margin-bottom:8px; }
+.pm-bar { height:100%; background:var(--red); border-radius:3px; transition:width .4s; }
+.pm-bar.full { background:var(--green); }
+.pm-payments { display:flex; flex-direction:column; gap:6px; }
+.pm-pay-item { display:flex; justify-content:space-between; align-items:center; font-size:12px; }
+.pm-pay-item .pp-date { color:var(--text-light); }
+.pm-pay-item .pp-amount { font-weight:700; color:var(--green); }
+
+/* ═══════════════ ROOM TYPE PER HOTEL ═══════════════ */
+.hotel-rooms { display:flex; flex-direction:column; gap:10px; }
+.hotel-room-item {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 16px; background:var(--bg); border-radius:var(--r-sm);
+  border:1px solid var(--border);
+}
+.hri-left .hri-name { font-weight:700; font-size:14px; }
+.hri-left .hri-nights { font-size:12px; color:var(--text-light); margin-top:2px; }
+.hri-room {
+  display:flex; align-items:center; gap:8px;
+}
+.room-badge {
+  padding:5px 12px; border-radius:20px; font-size:12px; font-weight:700;
+  background:rgba(126,35,32,0.1); color:var(--red); border:1px solid rgba(126,35,32,0.2);
+}
+
+/* ═══════════════ FLIGHT PER PILGRIM ═══════════════ */
+.flight-person { background:var(--bg); border-radius:var(--r-sm); padding:16px 18px; margin-bottom:10px; }
+.fp-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.fp-avatar { width:36px; height:36px; border-radius:8px; background:var(--red); color:white; font-weight:900; font-size:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.fp-name { font-weight:700; font-size:14px; }
+.fp-type { font-size:12px; color:var(--text-light); }
+.fp-options { display:flex; gap:10px; flex-wrap:wrap; }
+.fp-opt {
+  flex:1; min-width:200px; padding:12px 14px; border-radius:var(--r-sm);
+  border:2px solid var(--border); cursor:pointer; transition:all .2s;
+  background:white;
+}
+.fp-opt.selected { border-color:var(--red); background:rgba(126,35,32,0.03); }
+.fp-opt .fo-label { font-size:12px; font-weight:700; color:var(--text); }
+.fp-opt .fo-sub { font-size:11px; color:var(--text-light); margin-top:2px; }
+
+/* ═══════════════ DOCUMENT GRID ═══════════════ */
+.doc-person-hd {
+  display:flex; align-items:center; gap:12px;
+  background:var(--red-dark); border-radius:var(--r-sm);
+  padding:14px 18px; margin-bottom:12px;
+}
+.doc-person-hd .dp-avatar { width:40px; height:40px; border-radius:8px; background:rgba(255,255,255,0.15); border:1.5px solid rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; font-size:18px; color:white; flex-shrink:0; }
+.doc-person-hd h4 { color:white; font-size:14px; font-weight:700; }
+.doc-person-hd p { color:rgba(255,255,255,0.5); font-size:12px; }
+.doc-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.doc-item {
+  border:2px dashed rgba(0,0,0,0.1); border-radius:var(--r-sm);
+  padding:16px 12px; text-align:center; cursor:pointer; transition:all .25s; background:white;
+}
+.doc-item:hover { border-color:var(--red); }
+.doc-item.uploaded { border-color:var(--green); border-style:solid; }
+.doc-item .di-icon { font-size:28px; margin-bottom:6px; }
+.doc-item h5 { font-size:12px; font-weight:700; }
+.doc-item p { font-size:10px; color:var(--text-light); margin-top:2px; }
+.doc-item .di-status { font-size:10px; font-weight:700; margin-top:6px; }
+.doc-item.uploaded .di-status { color:var(--green); }
+.doc-item:not(.uploaded) .di-status { color:#C0392B; }
+
+/* ═══════════════ GROUND INFO ═══════════════ */
+.loc-tabs { display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap; }
+.loc-tab {
+  padding:9px 16px; border-radius:20px; border:1.5px solid var(--border);
+  font-size:13px; font-weight:700; cursor:pointer; transition:all .2s;
+  background:white; color:var(--text-mid);
+}
+.loc-tab:hover { border-color:var(--red); color:var(--red); }
+.loc-tab.active { background:var(--red); color:white; border-color:var(--red); }
+
+.ground-banner {
+  background:var(--red-dark); border-radius:var(--r); padding:24px 28px;
+  margin-bottom:18px; position:relative; overflow:hidden;
+}
+.ground-banner::before { content:''; position:absolute; inset:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M40 8 Q16 22 16 44 Q16 56 26 58 Q33 60 40 54 Q47 60 54 58 Q64 56 64 44 Q64 22 40 8Z' fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='1'/%3E%3C/svg%3E"); pointer-events:none; }
+.ground-banner h3 { font-family:'Playfair Display',serif; font-size:26px; color:white; font-weight:700; position:relative; z-index:1; }
+.ground-banner h3 span { color:rgba(255,255,255,0.6); }
+.ground-banner p { color:rgba(255,255,255,0.45); font-size:13px; margin-top:4px; position:relative; z-index:1; }
+
+.rep-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+.rep-card {
+  background:white; border-radius:var(--r-sm); padding:16px;
+  border:1px solid var(--border); box-shadow:var(--shadow);
+}
+.rep-card .rc-role { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text-light); font-weight:700; }
+.rep-card .rc-name { font-size:14px; font-weight:700; margin:4px 0 10px; }
+
+/* ═══════════════ STEP PROGRESS ═══════════════ */
+.step-bar { display:flex; background:white; border-radius:var(--r); overflow:hidden; border:1px solid var(--border); margin-bottom:20px; }
+.step { flex:1; padding:16px 10px; text-align:center; border-right:1px solid var(--border); cursor:pointer; transition:background .2s; }
+.step:last-child { border-right:none; }
+.step:hover { background:var(--bg); }
+.step .sn { width:28px; height:28px; border-radius:50%; margin:0 auto 6px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; background:rgba(0,0,0,0.06); color:var(--text-light); }
+.step.done .sn { background:var(--red-dark); color:white; }
+.step.active .sn { background:var(--red); color:white; box-shadow:0 3px 10px rgba(126,35,32,0.35); }
+.step .sl { font-size:11px; color:var(--text-light); }
+.step.done .sl { color:var(--red-dark); font-weight:700; }
+.step.active .sl { color:var(--red); font-weight:700; }
+.step.active { background:rgba(126,35,32,0.03); }
+
+/* ═══════════════ PACKAGE HERO ═══════════════ */
+.pkg-hero {
+  background:var(--red-dark); border-radius:var(--r); padding:32px;
+  margin-bottom:20px; position:relative; overflow:hidden;
+}
+.pkg-hero::before { content:''; position:absolute; inset:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M40 8 Q16 22 16 44 Q16 56 26 58 Q33 60 40 54 Q47 60 54 58 Q64 56 64 44 Q64 22 40 8Z' fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='1'/%3E%3C/svg%3E"); pointer-events:none; }
+.pkg-hero-in { position:relative; z-index:1; }
+.pkg-tag { display:inline-block; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.7); font-size:10px; letter-spacing:2px; text-transform:uppercase; padding:4px 12px; border-radius:20px; margin-bottom:12px; }
+.pkg-hero h2 { font-family:'Playfair Display',serif; font-size:32px; color:white; font-weight:700; }
+.pkg-price { margin-top:16px; display:flex; align-items:baseline; gap:6px; }
+.pkg-price .pa { font-family:'Playfair Display',serif; font-size:36px; color:white; font-weight:700; }
+.pkg-price .pp { color:rgba(255,255,255,0.4); font-size:14px; }
+.pkg-meta { display:flex; gap:24px; margin-top:14px; flex-wrap:wrap; }
+.pkg-meta-item .pmi-l { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.35); }
+.pkg-meta-item .pmi-v { font-size:14px; color:white; font-weight:700; margin-top:2px; }
+
+/* ═══════════════ DASHBOARD ═══════════════ */
+.welcome-strip {
+  background:var(--red); border-radius:var(--r); padding:24px 28px;
+  margin-bottom:20px; position:relative; overflow:hidden;
+  box-shadow:0 6px 24px rgba(126,35,32,0.3);
+}
+.welcome-strip::before { content:''; position:absolute; inset:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M40 8 Q16 22 16 44 Q16 56 26 58 Q33 60 40 54 Q47 60 54 58 Q64 56 64 44 Q64 22 40 8Z' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='1'/%3E%3C/svg%3E"); pointer-events:none; }
+.welcome-strip h3 { font-family:'Playfair Display',serif; font-size:22px; color:white; font-weight:600; position:relative; z-index:1; }
+.welcome-strip h3 span { font-weight:700; }
+.welcome-strip p { color:rgba(255,255,255,0.55); font-size:13px; position:relative; z-index:1; margin-top:4px; }
+
+/* ═══════════════ ADMIN - PILGRIM TABLE ═══════════════ */
+.doc-indicators { display:flex; gap:3px; }
+.doc-ind { width:8px; height:8px; border-radius:2px; }
+.doc-ind.ok { background:#1E6B3A; }
+.doc-ind.miss { background:#C0392B; }
+
+/* ═══════════════ TOAST ═══════════════ */
+.toast {
+  position:fixed; top:70px; right:20px; z-index:999;
+  background:white; border-radius:var(--r-sm); padding:14px 18px;
+  display:flex; align-items:center; gap:10px; min-width:280px;
+  box-shadow:var(--shadow-lg); border-left:4px solid var(--red);
+  transform:translateX(110%); transition:transform .35s cubic-bezier(.16,1,.3,1);
+}
+.toast.show { transform:translateX(0); }
+.toast h5 { font-size:13px; font-weight:700; }
+.toast p { font-size:12px; color:var(--text-light); margin-top:1px; }
+
+/* ═══════════════ WHATSAPP FLOAT ═══════════════ */
+.wa-float {
+  position:fixed; bottom:24px; right:24px; z-index:100;
+  width:52px; height:52px; border-radius:50%; background:#25D366;
+  display:flex; align-items:center; justify-content:center; font-size:24px;
+  box-shadow:0 6px 20px rgba(37,211,102,0.4); cursor:pointer; transition:all .3s;
+}
+.wa-float:hover { transform:scale(1.1); }
+
+/* ═══════════════ NOTIF PANEL ═══════════════ */
+.notif-panel {
+  position:fixed; top:62px; right:0; z-index:200;
+  width:320px; max-height:80vh; overflow-y:auto;
+  background:white; border-left:1px solid var(--border);
+  box-shadow:-8px 0 32px rgba(0,0,0,0.1);
+  transform:translateX(100%); transition:transform .3s;
+}
+.notif-panel.open { transform:translateX(0); }
+.np-head { padding:14px 18px; border-bottom:1px solid var(--border); }
+.np-head h4 { font-family:'Playfair Display',serif; font-size:15px; color:var(--red-dark); }
+.np-item { padding:12px 18px; border-bottom:1px solid rgba(0,0,0,0.04); display:flex; gap:10px; }
+.np-item.unread { background:rgba(126,35,32,0.03); }
+.np-item .ni-ico { font-size:18px; flex-shrink:0; }
+.np-item h5 { font-size:13px; font-weight:700; }
+.np-item p { font-size:11px; color:var(--text-light); margin-top:1px; }
+.np-item .ni-time { font-size:10px; color:var(--text-light); margin-top:4px; }
+
+/* ═══════════════ TABS ═══════════════ */
+.ptabs { display:flex; gap:8px; margin-bottom:20px; }
+.ptab {
+  padding:9px 18px; border-radius:var(--r-sm);
+  background:white; border:1.5px solid var(--border);
+  font-size:13px; font-weight:700; cursor:pointer; transition:all .2s; color:var(--text-mid);
+}
+.ptab.active { background:var(--red-dark); color:white; border-color:var(--red-dark); }
+
+/* CAMP INFO */
+.camp-detail { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); font-size:14px; }
+.camp-detail:last-child { border-bottom:none; }
+.cd-l { color:var(--text-light); }
+.cd-v { font-weight:700; color:var(--text); }
+
+/* RESPONSIVE */
+@media(max-width:1000px) {
+  .sidebar { width:220px; }
+  .main { margin-left:220px; }
+  .stat-grid { grid-template-columns:repeat(2,1fr); }
+  .rep-grid { grid-template-columns:1fr 1fr; }
+  .doc-grid { grid-template-columns:repeat(3,1fr); }
+  .login-wrap { grid-template-columns:1fr; width:420px; }
+  .login-left { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════ LOGIN ════════════════════════ -->
+<div id="loginPage">
+  <div class="login-wrap">
+    <div class="login-left">
+      <div class="ll-top">
+        <div class="ktn-logo">
+          <div class="ktn-wordmark">
+            <span class="k">K</span><span class="t">T</span><span class="n">N</span><span class="plane">✈</span>
+          </div>
+          <div class="ktn-sub">Khatm E Nubuwwat Travel Network</div>
+        </div>
+        <h2>Your Blessed Journey Begins Here</h2>
+        <p>Log in to access your personalised Hajj portal — track your package, payments, documents, and ground information.</p>
+      </div>
+      <div class="ll-bottom">
+        <p class="tagline">"Luxury and spirituality, perfectly balanced for your Hajj experience."</p>
+      </div>
+    </div>
+    <div class="login-right">
+      <div class="login-tabs">
+        <div class="login-tab active" onclick="setLoginMode('pilgrim',this)">Pilgrim Login</div>
+        <div class="login-tab" onclick="setLoginMode('admin',this)">Admin Login</div>
+      </div>
+      <div id="loginPilgrimFields">
+        <div class="fg"><label class="lf-label">Pilgrim ID</label><input class="lf-input" id="lPilgrimId" value="KN-2026-0042" placeholder="e.g. KN-2026-0042"></div>
+        <div class="fg"><label class="lf-label">Password</label><input class="lf-input" type="password" id="lPilgrimPw" value="••••••••" placeholder="Password"></div>
+      </div>
+      <div id="loginAdminFields" style="display:none">
+        <div class="fg"><label class="lf-label">Admin Username</label><input class="lf-input" id="lAdminUser" value="admin" placeholder="admin"></div>
+        <div class="fg"><label class="lf-label">Password</label><input class="lf-input" type="password" id="lAdminPw" value="••••••••" placeholder="Password"></div>
+      </div>
+      <button class="btn-login-main" onclick="doLogin()">ENTER PORTAL</button>
+      <p class="login-hint">Credentials provided by Khatme Nabuwwat Hajj Group<br>Support: <strong>+92 300 0000000</strong> · www.ktnhajjgroup.com</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ NOTIFICATION PANEL ════════════════════════ -->
+<div class="notif-panel" id="notifPanel">
+  <div class="np-head"><h4>Notifications</h4></div>
+  <div class="np-item unread"><div class="ni-ico">🛂</div><div><h5>Visa Uploaded</h5><p>Your Saudi Hajj visa is ready to view.</p><div class="ni-time">2 hours ago</div></div></div>
+  <div class="np-item unread"><div class="ni-ico">✈️</div><div><h5>Flight Ticket Ready</h5><p>Lahore → Jeddah, 18 May — available now.</p><div class="ni-time">5 hours ago</div></div></div>
+  <div class="np-item"><div class="ni-ico">💳</div><div><h5>Payment Confirmed</h5><p>USD 1,000 registration payment verified.</p><div class="ni-time">2 days ago</div></div></div>
+  <div class="np-item"><div class="ni-ico">📄</div><div><h5>Document Reminder</h5><p>CNIC (back) for Pilgrim 2 still pending.</p><div class="ni-time">3 days ago</div></div></div>
+</div>
+
+<!-- ════════════════════════ APP SHELL ════════════════════════ -->
+<div id="appShell">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-head">
+      <div class="ktn-logo ktn-logo-sm">
+        <div class="ktn-wordmark"><span class="k">K</span><span class="t">T</span><span class="n">N</span><span class="plane">✈</span></div>
+        <div class="ktn-sub">Khatm E Nubuwwat · Hajj Group</div>
+      </div>
+    </div>
+    <div class="sb-profile">
+      <div class="sp-mode" id="sbMode">Pilgrim Portal</div>
+      <div class="sp-name" id="sbName">Ahmad Raza</div>
+      <div class="sp-pkg" id="sbPkg">Package 06 · Double · 2 Pilgrims</div>
+    </div>
+
+    <!-- PILGRIM NAV -->
+    <div class="sb-nav" id="navPilgrim">
+      <div class="sb-section">Main</div>
+      <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="ni">🏠</span>Dashboard</div>
+      <div class="nav-item" onclick="showPage('package',this)"><span class="ni">📦</span>My Package</div>
+      <div class="sb-section">Financials</div>
+      <div class="nav-item" onclick="showPage('payment',this)"><span class="ni">💳</span>Payments<span class="nav-badge">1 Due</span></div>
+      <div class="sb-section">Pilgrims</div>
+      <div class="nav-item" onclick="showPage('details',this)"><span class="ni">👤</span>Pilgrim Details</div>
+      <div class="nav-item" onclick="showPage('documents',this)"><span class="ni">📄</span>Documents<span class="nav-badge alert">2</span></div>
+      <div class="sb-section">Travel</div>
+      <div class="nav-item" onclick="showPage('visa',this)"><span class="ni">🛂</span>Visa & Tickets<span class="nav-badge">New</span></div>
+      <div class="sb-section">Ground Info</div>
+      <div class="nav-item" onclick="showPage('ground',this); switchLoc('makkah')"><span class="ni">🕌</span>Makkah</div>
+      <div class="nav-item" onclick="showPage('ground',this); switchLoc('azizia')"><span class="ni">🏨</span>Azizia</div>
+      <div class="nav-item" onclick="showPage('ground',this); switchLoc('madinah')"><span class="ni">🌿</span>Madinah</div>
+      <div class="nav-item" onclick="showPage('ground',this); switchLoc('mina')"><span class="ni">⛺</span>Mina</div>
+      <div class="nav-item" onclick="showPage('ground',this); switchLoc('arafat')"><span class="ni">🌄</span>Arafat</div>
+    </div>
+
+    <!-- ADMIN NAV -->
+    <div class="sb-nav" id="navAdmin" style="display:none">
+      <div class="sb-section">Overview</div>
+      <div class="nav-item active" onclick="showPage('adminDash',this)"><span class="ni">📊</span>Dashboard</div>
+      <div class="sb-section">Management</div>
+      <div class="nav-item" onclick="showPage('adminPilgrims',this)"><span class="ni">👥</span>Pilgrims</div>
+      <div class="nav-item" onclick="showPage('adminPackages',this)"><span class="ni">📦</span>Packages</div>
+      <div class="nav-item" onclick="showPage('adminPayments',this)"><span class="ni">💰</span>Payments</div>
+      <div class="nav-item" onclick="showPage('adminDocuments',this)"><span class="ni">📋</span>Documents</div>
+      <div class="sb-section">Operations</div>
+      <div class="nav-item" onclick="showPage('adminBus',this)"><span class="ni">🚌</span>Bus & Groups</div>
+      <div class="sb-section">Export</div>
+      <div class="nav-item" onclick="showPage('adminExport',this)"><span class="ni">📥</span>Excel Export</div>
+    </div>
+
+    <div class="sb-foot">
+      <button class="btn-logout" onclick="doLogout()">← Sign Out</button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-mode admin" id="topbarMode" style="display:none">ADMIN</span>
+        <span class="topbar-title" id="topbarTitle">Dashboard</span>
+      </div>
+      <div class="topbar-right">
+        <button class="tb-icon" onclick="toggleNotif()">🔔<div class="tb-dot"></div></button>
+        <div class="tb-avatar" id="tbAvatar">AR</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+<!-- ════════ PILGRIM: DASHBOARD ════════ -->
+<div class="page active" id="page-dashboard">
+  <div class="ph"><h2>Assalamu Alaikum, Ahmad Raza</h2><div class="ph-line"></div><p>Welcome to your KTN Hajj Portal — Hajj Mubarak!</p></div>
+  <div class="welcome-strip">
+    <h3>Package 06 — <span>17 Days · Maktab A · Makkah · Azizia · Madinah</span></h3>
+    <p>Departure: 18 May 2026 · Return: 03 June 2026</p>
+  </div>
+  <div class="step-bar">
+    <div class="step done" onclick="showPage('package',null)"><div class="sn">✓</div><div class="sl">Package</div></div>
+    <div class="step done" onclick="showPage('payment',null)"><div class="sn">✓</div><div class="sl">Registered</div></div>
+    <div class="step active" onclick="showPage('documents',null)"><div class="sn">3</div><div class="sl">Documents</div></div>
+    <div class="step" onclick="showPage('visa',null)"><div class="sn">4</div><div class="sl">Visa & Ticket</div></div>
+    <div class="step" onclick="showPage('ground',null)"><div class="sn">5</div><div class="sl">Ground Info</div></div>
+  </div>
+  <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="stat-card red-card"><div class="sc-label">Package Cost</div><div class="sc-val">$10,500</div><div class="sc-sub">Per person</div></div>
+    <div class="stat-card"><div class="sc-label">Total Paid</div><div class="sc-val" style="color:var(--green)">$1,000</div><div class="sc-sub" style="color:var(--green)">✓ Verified</div></div>
+    <div class="stat-card"><div class="sc-label">Remaining</div><div class="sc-val" style="color:#C86400">$9,500</div><div class="sc-sub" style="color:#C0392B">Next due: 15 Feb</div></div>
+  </div>
+  <div class="card">
+    <div class="card-hd">⚡ Action Required</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:14px;padding:13px 15px;background:rgba(192,57,43,0.05);border:1px solid rgba(192,57,43,0.15);border-radius:var(--r-sm)">
+        <span style="font-size:18px">📄</span>
+        <div style="flex:1"><div style="font-size:14px;font-weight:700">Upload CNIC (back) — Fatima Raza</div><div style="font-size:12px;color:var(--text-light)">Required for visa processing</div></div>
+        <button class="btn btn-red btn-sm" onclick="showPage('documents',null)">Upload →</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:13px 15px;background:rgba(200,100,0,0.05);border:1px solid rgba(200,100,0,0.2);border-radius:var(--r-sm)">
+        <span style="font-size:18px">💳</span>
+        <div style="flex:1"><div style="font-size:14px;font-weight:700">50% Payment Due — $4,750</div><div style="font-size:12px;color:var(--text-light)">Due: 15 February 2026</div></div>
+        <button class="btn btn-outline btn-sm" onclick="showPage('payment',null)">Pay →</button>
+      </div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="card">
+      <div class="card-hd">📅 Key Dates</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="padding:11px 14px;background:var(--bg);border-radius:var(--r-sm);border-left:3px solid var(--red)"><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-light)">Departure</div><div style="font-size:15px;font-weight:700;margin-top:2px">18 May 2026</div><div style="font-size:11px;color:var(--text-light)">Allama Iqbal Int'l, Lahore</div></div>
+        <div style="padding:11px 14px;background:var(--bg);border-radius:var(--r-sm);border-left:3px solid var(--red)"><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-light)">Return</div><div style="font-size:15px;font-weight:700;margin-top:2px">03 June 2026</div><div style="font-size:11px;color:var(--text-light)">Departure from KSA</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd">🏨 Hotels</div>
+      <div class="hotel-rooms">
+        <div class="hotel-room-item"><div class="hri-left"><div class="hri-name">Movenpick Makkah</div><div class="hri-nights">3 Nights · 18–21 May</div></div><div class="hri-room"><span class="room-badge">Double Room</span></div></div>
+        <div class="hotel-room-item"><div class="hri-left"><div class="hri-name">Azizia Premium</div><div class="hri-nights">10 Nights · 21–31 May</div></div><div class="hri-room"><span class="room-badge">Sharing</span></div></div>
+        <div class="hotel-room-item"><div class="hri-left"><div class="hri-name">Mias Al Medina</div><div class="hri-nights">3 Nights · 31 May–3 Jun</div></div><div class="hri-room"><span class="room-badge">Double Room</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ PILGRIM: PACKAGE ════════ -->
+<div class="page" id="page-package">
+  <div class="ph"><h2>My Package</h2><div class="ph-line"></div><p>Full details of your selected Hajj package</p></div>
+  <div class="pkg-hero">
+    <div class="pkg-hero-in">
+      <div class="pkg-tag">Package 06 · Maktab A · Qurbani NOT Included</div>
+      <h2>17 Days Hajj Package<br>Makkah · Azizia · Madinah</h2>
+      <div class="pkg-meta">
+        <div class="pkg-meta-item"><div class="pmi-l">Room Type</div><div class="pmi-v">Mixed (see hotels below)</div></div>
+        <div class="pkg-meta-item"><div class="pmi-l">Pilgrims</div><div class="pmi-v">2 Persons</div></div>
+        <div class="pkg-meta-item"><div class="pmi-l">Flight</div><div class="pmi-v">See Ticket Details</div></div>
+      </div>
+      <div class="pkg-price"><span class="pa">$10,500</span><span class="pp">per person · SAR 39,000</span></div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="card">
+      <div class="card-hd">🏨 Hotels & Room Types</div>
+      <div class="hotel-rooms">
+        <div class="hotel-room-item"><div class="hri-left"><div class="hri-name">Movenpick / Swissotel · Makkah</div><div class="hri-nights">3 Nights · 18–21 May 2026</div></div><div class="hri-room"><span class="room-badge">Double Room</span></div></div>
+        <div class="hotel-room-item"><div class="hri-left"><div class="hri-name">Azizia Premium · Azizia</div><div class="hri-nights">10 Nights · 21–31 May 2026</div></div><div class="hri-room"><span class="room-badge">Sharing</span></div></div>
+        <div class="hotel-room-item"><div class="hri-left"><div class="hri-name">Mias Al Medina · Madinah</div><div class="hri-nights">3 Nights · 31 May–03 Jun 2026</div></div><div class="hri-room"><span class="room-badge">Double Room</span></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd">📅 Stay Schedule</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="padding:12px 14px;background:var(--bg);border-radius:var(--r-sm);border-left:3px solid var(--red)"><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-light)">Makkah Hotel</div><div style="font-weight:700;margin-top:2px">1st → 4th Zil Hajj</div><div style="font-size:12px;color:var(--text-light)">18 May → 21 May 2026</div></div>
+        <div style="padding:12px 14px;background:var(--bg);border-radius:var(--r-sm);border-left:3px solid var(--red)"><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-light)">Azizia (incl. Hajj Days)</div><div style="font-weight:700;margin-top:2px">4th → 14th Zil Hajj</div><div style="font-size:12px;color:var(--text-light)">21 May → 31 May 2026</div></div>
+        <div style="padding:12px 14px;background:var(--bg);border-radius:var(--r-sm);border-left:3px solid var(--red)"><div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-light)">Madinah Hotel</div><div style="font-weight:700;margin-top:2px">14th → 17th Zil Hajj</div><div style="font-size:12px;color:var(--text-light)">31 May → 03 June 2026</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd">✅ Package Includes</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;display:flex;align-items:center;gap:8px"><span style="color:var(--red);font-size:10px">✦</span>Maktab A — Nearest to Jamarat</div>
+      <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;display:flex;align-items:center;gap:8px"><span style="color:var(--red);font-size:10px">✦</span>Air-conditioned 4×4m tents</div>
+      <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;display:flex;align-items:center;gap:8px"><span style="color:var(--red);font-size:10px">✦</span>Private washrooms in Mina</div>
+      <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;display:flex;align-items:center;gap:8px"><span style="color:var(--red);font-size:10px">✦</span>Full board meals via Muallim</div>
+      <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;display:flex;align-items:center;gap:8px"><span style="color:var(--red);font-size:10px">✦</span>Meet & Assist at all locations</div>
+      <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;display:flex;align-items:center;gap:8px"><span style="color:var(--red);font-size:10px">✦</span>Guided Ziarat of Holy Sites</div>
+      <div style="padding:8px 0;font-size:14px;display:flex;align-items:center;gap:8px"><span style="color:var(--red);font-size:10px">✦</span>Luxury private buses (seat by seat)</div>
+      <div style="padding:8px 0;font-size:14px;display:flex;align-items:center;gap:8px"><span style="color:var(--red);font-size:10px">✦</span>24-hr ice cream & beverages (Azizia)</div>
+    </div>
+  </div>
+  <div style="background:rgba(30,107,58,0.06);border:1px solid rgba(30,107,58,0.2);border-radius:var(--r);padding:20px 24px;display:flex;align-items:center;gap:16px" id="confirmBox">
+    <span style="font-size:32px">📋</span>
+    <div style="flex:1"><p style="font-size:14px;color:var(--text-mid);line-height:1.6"><strong>Package Confirmation:</strong> I, <strong>Ahmad Raza</strong>, hereby confirm my selection of Package 06 (Makkah Double, Azizia Sharing, Madinah Double) as described above.</p></div>
+    <button class="btn btn-red" onclick="confirmPackage()">Confirm Package ✓</button>
+  </div>
+</div>
+
+<!-- ════════ PILGRIM: PAYMENT ════════ -->
+<div class="page" id="page-payment">
+  <div class="ph"><h2>Payments & Invoice</h2><div class="ph-line"></div><p>Track milestones and upload payment receipts</p></div>
+  <div class="card">
+    <div class="card-hd">💰 Payment Milestones</div>
+    <div class="pay-milestone complete">
+      <div class="pm-head"><span class="pm-title">Registration Fee</span><span class="pm-amount">$1,000</span></div>
+      <div class="pm-progress"><div class="pm-bar full" style="width:100%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px"><span>Paid: $1,000 / $1,000</span><span class="badge badge-green">✓ Complete</span></div>
+      <div class="pm-payments">
+        <div class="pm-pay-item"><span class="pp-date">10 Nov 2025</span><span class="pp-amount">+$1,000</span><span class="badge badge-green" style="font-size:10px">Verified</span></div>
+      </div>
+    </div>
+    <div class="pay-milestone overdue">
+      <div class="pm-head"><span class="pm-title">50% Instalment</span><span class="pm-amount">$4,750</span></div>
+      <div class="pm-progress"><div class="pm-bar" style="width:0%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:12px"><span>Paid: $0 / $4,750 · Due: <strong style="color:#C0392B">15 Feb 2026</strong></span><span class="badge badge-orange">⏳ Pending</span></div>
+      <p style="font-size:12px;color:var(--text-light);margin-bottom:12px">You may pay this in multiple payments. Upload each receipt separately.</p>
+      <label onclick="document.getElementById('payFile2').click()" style="cursor:pointer">
+        <div class="upload-zone" style="padding:20px">
+          <div style="font-size:28px;margin-bottom:6px">📎</div>
+          <h4 style="font-size:14px;margin-bottom:4px">Upload Payment Receipt</h4>
+          <p style="font-size:12px;color:var(--text-light)">PDF, JPG, PNG · After each payment transfer</p>
+          <input type="file" id="payFile2" accept=".pdf,.jpg,.png" onchange="showToast('Receipt Uploaded','Your receipt has been submitted for verification.')">
+        </div>
+      </label>
+    </div>
+    <div class="pay-milestone upcoming">
+      <div class="pm-head"><span class="pm-title">Final Balance</span><span class="pm-amount">$4,750</span></div>
+      <div class="pm-progress"><div class="pm-bar" style="width:0%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px"><span>Paid: $0 / $4,750 · Due: <strong>01 May 2026</strong></span><span class="badge badge-grey">Upcoming</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd">📊 Summary</div>
+    <table class="tbl">
+      <thead><tr><th>Item</th><th>Amount</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Registration</td><td style="font-weight:700">$1,000</td><td><span class="badge badge-green">Paid ✓</span></td></tr>
+        <tr><td>50% Instalment (Due 15 Feb)</td><td style="font-weight:700">$4,750</td><td><span class="badge badge-orange">Pending</span></td></tr>
+        <tr><td>Final Balance (Due 01 May)</td><td style="font-weight:700">$4,750</td><td><span class="badge badge-grey">Upcoming</span></td></tr>
+        <tr style="background:var(--bg)"><td style="font-weight:900">Total</td><td style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--red-dark)">$10,500</td><td></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:11px;color:var(--text-light);margin-top:10px;padding:10px;background:var(--bg);border-radius:var(--r-sm)">⚠ Qurbani not included. Exchange rate applies at time of payment. All package prices subject to change without prior notice.</p>
+  </div>
+</div>
+
+<!-- ════════ PILGRIM: DETAILS ════════ -->
+<div class="page" id="page-details">
+  <div class="ph"><h2>Pilgrim Details</h2><div class="ph-line"></div><p>Enter all required information for each pilgrim</p></div>
+  <div class="ptabs">
+    <div class="ptab active" onclick="switchPilgrimTab(1,this)">👤 Pilgrim 1</div>
+    <div class="ptab" onclick="switchPilgrimTab(2,this)">👤 Pilgrim 2</div>
+  </div>
+  <div class="card" id="pf1">
+    <div class="card-hd">👤 Pilgrim 1 — Primary</div>
+    <div class="form-row">
+      <div class="fg"><label>First Name</label><input value="Ahmad" placeholder="First name"></div>
+      <div class="fg"><label>Last Name</label><input value="Raza" placeholder="Last name"></div>
+      <div class="fg"><label>Father's Name</label><input value="Muhammad Raza" placeholder="Father's full name"></div>
+      <div class="fg"><label>Phone Number</label><input value="+92 300 1234567" placeholder="+92 300 ..."></div>
+      <div class="fg"><label>Blood Group</label><select><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div>
+      <div class="fg"><label>CNIC Number</label><input value="35202-1234567-1" placeholder="XXXXX-XXXXXXX-X"></div>
+    </div>
+    <div class="fg"><label>Passport Number</label><input value="AA1234567" placeholder="Passport number"></div>
+    <div style="margin-top:16px;display:flex;justify-content:flex-end"><button class="btn btn-red" onclick="showToast('Saved','Pilgrim 1 details saved successfully.')">Save Details</button></div>
+  </div>
+  <div class="card" id="pf2" style="display:none">
+    <div class="card-hd">👤 Pilgrim 2</div>
+    <div class="form-row">
+      <div class="fg"><label>First Name</label><input value="Fatima" placeholder="First name"></div>
+      <div class="fg"><label>Last Name</label><input value="Raza" placeholder="Last name"></div>
+      <div class="fg"><label>Father's Name</label><input placeholder="Father's full name"></div>
+      <div class="fg"><label>Phone Number</label><input placeholder="+92 300 ..."></div>
+      <div class="fg"><label>Blood Group</label><select><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div>
+      <div class="fg"><label>CNIC Number</label><input placeholder="XXXXX-XXXXXXX-X"></div>
+    </div>
+    <div class="fg"><label>Passport Number</label><input placeholder="Passport number"></div>
+    <div style="margin-top:16px;display:flex;justify-content:flex-end"><button class="btn btn-red" onclick="showToast('Saved','Pilgrim 2 details saved successfully.')">Save Details</button></div>
+  </div>
+</div>
+
+<!-- ════════ PILGRIM: DOCUMENTS ════════ -->
+<div class="page" id="page-documents">
+  <div class="ph"><h2>Documents</h2><div class="ph-line"></div><p>Upload all required documents for every pilgrim in your package</p></div>
+  <div style="margin-bottom:24px">
+    <div class="doc-person-hd">
+      <div class="dp-avatar">👤</div>
+      <div><h4>Pilgrim 1 — Ahmad Raza</h4><p>3 of 4 documents uploaded</p></div>
+      <span class="badge badge-orange" style="margin-left:auto">1 Pending</span>
+    </div>
+    <div class="doc-grid">
+      <div class="doc-item uploaded"><div class="di-icon">🛂</div><h5>Passport</h5><p>All pages</p><div class="di-status">✓ Uploaded</div></div>
+      <div class="doc-item uploaded"><div class="di-icon">🪪</div><h5>CNIC Front</h5><p>Clear scan</p><div class="di-status">✓ Uploaded</div></div>
+      <div class="doc-item uploaded"><div class="di-icon">🪪</div><h5>CNIC Back</h5><p>Clear scan</p><div class="di-status">✓ Uploaded</div></div>
+      <div class="doc-item" onclick="markUploaded(this)"><div class="di-icon">📸</div><h5>Passport Photo</h5><p>White background</p><div class="di-status">✗ Missing</div><input type="file" style="display:none"></div>
+    </div>
+  </div>
+  <div>
+    <div class="doc-person-hd">
+      <div class="dp-avatar">👤</div>
+      <div><h4>Pilgrim 2 — Fatima Raza</h4><p>2 of 4 documents uploaded</p></div>
+      <span class="badge" style="background:rgba(192,57,43,0.1);color:#C0392B;margin-left:auto">2 Missing</span>
+    </div>
+    <div class="doc-grid">
+      <div class="doc-item uploaded"><div class="di-icon">🛂</div><h5>Passport</h5><p>All pages</p><div class="di-status">✓ Uploaded</div></div>
+      <div class="doc-item uploaded"><div class="di-icon">🪪</div><h5>CNIC Front</h5><p>Clear scan</p><div class="di-status">✓ Uploaded</div></div>
+      <div class="doc-item" onclick="markUploaded(this)"><div class="di-icon">🪪</div><h5>CNIC Back</h5><p>Clear scan</p><div class="di-status">✗ Missing</div><input type="file" style="display:none"></div>
+      <div class="doc-item" onclick="markUploaded(this)"><div class="di-icon">📸</div><h5>Passport Photo</h5><p>White background</p><div class="di-status">✗ Missing</div><input type="file" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ PILGRIM: VISA & TICKETS ════════ -->
+<div class="page" id="page-visa">
+  <div class="ph"><h2>Visa & Tickets</h2><div class="ph-line"></div><p>Documents uploaded by KTN team — you'll be notified via email and WhatsApp</p></div>
+  <div style="background:rgba(30,107,58,0.08);border:1px solid rgba(30,107,58,0.2);border-radius:var(--r);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px">
+    <span style="font-size:24px">🔔</span>
+    <div><div style="font-size:14px;font-weight:700;color:var(--green)">New Documents Available!</div><div style="font-size:13px;color:var(--text-mid)">Visa and outbound flight ticket uploaded. Please review below.</div></div>
+  </div>
+  <div class="card">
+    <div class="card-hd">🛂 Visa & Documents</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--bg);border-radius:var(--r-sm)">
+        <div style="width:48px;height:48px;border-radius:10px;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🛂</div>
+        <div style="flex:1"><div style="font-weight:700">Saudi Arabia Hajj Visa — Both Pilgrims</div><div style="font-size:12px;color:var(--text-light)">Valid for Hajj 2026 season</div></div>
+        <span class="badge badge-green">Available ✓</span>
+        <button class="btn btn-outline btn-sm" onclick="showToast('Visa','Opening Saudi Hajj Visa document...')">View & Download</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--bg);border-radius:var(--r-sm)">
+        <div style="width:48px;height:48px;border-radius:10px;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">✈️</div>
+        <div style="flex:1"><div style="font-weight:700">Return Ticket — Madinah → Lahore</div><div style="font-size:12px;color:var(--text-light)">03 June 2026</div></div>
+        <span class="badge badge-orange">Processing</span>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd">✈️ Flight Arrangements — Per Pilgrim</div>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:16px">Each pilgrim may have different flight arrangements. Review yours below.</p>
+    <div class="flight-person">
+      <div class="fp-head"><div class="fp-avatar">AR</div><div><div class="fp-name">Ahmad Raza</div><div class="fp-type">Pilgrim 1</div></div></div>
+      <div class="fp-options">
+        <div class="fp-opt selected"><div class="fo-label">✈ Ticket Provided by KTN</div><div class="fo-sub">Departure: Allama Iqbal Int'l, Lahore · 18 May 2026</div></div>
+      </div>
+    </div>
+    <div class="flight-person">
+      <div class="fp-head"><div class="fp-avatar">FR</div><div><div class="fp-name">Fatima Raza</div><div class="fp-type">Pilgrim 2</div></div></div>
+      <div class="fp-options">
+        <div class="fp-opt selected"><div class="fo-label">🌍 Own Ticket</div><div class="fo-sub">Flying from: Lahore · Self-arranged</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ PILGRIM: GROUND INFO ════════ -->
+<div class="page" id="page-ground">
+  <div class="ph"><h2>Ground Information</h2><div class="ph-line"></div><p>On-ground details posted by your KTN Group Coordinator</p></div>
+  <div class="loc-tabs">
+    <div class="loc-tab active" onclick="switchLoc('makkah',this)">🕌 Makkah</div>
+    <div class="loc-tab" onclick="switchLoc('azizia',this)">🏨 Azizia</div>
+    <div class="loc-tab" onclick="switchLoc('madinah',this)">🌿 Madinah</div>
+    <div class="loc-tab" onclick="switchLoc('mina',this)">⛺ Mina</div>
+    <div class="loc-tab" onclick="switchLoc('arafat',this)">🌄 Arafat</div>
+  </div>
+
+  <!-- MAKKAH -->
+  <div id="gs-makkah">
+    <div class="ground-banner"><h3>🕌 <span>Makkah Al-Mukarramah</span></h3><p>18 May → 21 May 2026 · 3 Nights · Masjid Al-Haram Area</p></div>
+    <div class="rep-grid">
+      <div class="rep-card"><div class="rc-role">Makkah Representative</div><div class="rc-name">Haji Tariq Mehmood</div><a href="https://wa.me/966551234567" target="_blank" class="btn btn-wa btn-sm">💬 WhatsApp</a></div>
+      <div class="rep-card"><div class="rc-role">Airport Representative</div><div class="rc-name">Br. Zulfiqar Ahmed</div><a href="https://wa.me/966559876543" target="_blank" class="btn btn-wa btn-sm">💬 WhatsApp</a></div>
+      <div class="rep-card"><div class="rc-role">Group Leader</div><div class="rc-name">Maulana Sahib</div><a href="https://wa.me/966554567890" target="_blank" class="btn btn-wa btn-sm">💬 WhatsApp</a></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="card"><div class="card-hd">🏨 Hotel</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="padding:12px;background:var(--bg);border-radius:var(--r-sm)"><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Hotel</div><div style="font-weight:700;margin-top:3px">Movenpick Makkah</div></div>
+          <div style="padding:12px;background:var(--bg);border-radius:var(--r-sm)"><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Your Room</div><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--red)">714</div></div>
+          <div style="padding:12px;background:var(--bg);border-radius:var(--r-sm)"><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Room Type</div><div style="font-weight:700;margin-top:3px">Double Room</div></div>
+          <div style="padding:12px;background:var(--bg);border-radius:var(--r-sm)"><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Check-out</div><div style="font-weight:700;margin-top:3px">21 May 2026</div></div>
+        </div>
+      </div>
+      <div class="card"><div class="card-hd">🍽️ Meals</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><div style="display:flex;gap:8px;align-items:center"><span>🌅</span>Breakfast · Zam Zam Restaurant</div><div style="font-size:13px;color:var(--text-light)">06:00–09:30</div></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0"><div style="display:flex;gap:8px;align-items:center"><span>🌙</span>Dinner · Zam Zam Restaurant</div><div style="font-size:13px;color:var(--text-light)">19:30–22:30</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AZIZIA -->
+  <div id="gs-azizia" style="display:none">
+    <div class="ground-banner"><h3>🏨 <span>Azizia Premium Hotel</span></h3><p>21 May → 31 May 2026 · 10 Nights · Including Hajj Days</p></div>
+    <div class="rep-grid">
+      <div class="rep-card"><div class="rc-role">Azizia Representative</div><div class="rc-name">Haji Naseer Akhtar</div><a href="https://wa.me/966552223333" target="_blank" class="btn btn-wa btn-sm">💬 WhatsApp</a></div>
+      <div class="rep-card"><div class="rc-role">Medical Team</div><div class="rc-name">Dr. Imran (On-site)</div><a href="https://wa.me/966551119999" target="_blank" class="btn btn-wa btn-sm">💬 WhatsApp</a></div>
+      <div class="rep-card"><div class="rc-role">Bus Coordinator</div><div class="rc-name">Br. Kamran</div><a href="https://wa.me/966554445555" target="_blank" class="btn btn-wa btn-sm">💬 WhatsApp</a></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="card"><div class="card-hd">🏨 Hotel</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="padding:12px;background:var(--bg);border-radius:var(--r-sm)"><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Hotel</div><div style="font-weight:700;margin-top:3px">Azizia Premium</div></div>
+          <div style="padding:12px;background:var(--bg);border-radius:var(--r-sm)"><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Room</div><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--red)">312</div></div>
+          <div style="padding:12px;background:var(--bg);border-radius:var(--r-sm)"><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Room Type</div><div style="font-weight:700;margin-top:3px">Sharing</div></div>
+          <div style="padding:12px;background:var(--bg);border-radius:var(--r-sm)"><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Check-out</div><div style="font-weight:700;margin-top:3px">31 May 2026</div></div>
+        </div>
+      </div>
+      <div class="card"><div class="card-hd">🍽️ Meals (Full Board)</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><div>🌅 Breakfast</div><div style="font-size:13px;color:var(--text-light)">06:00–09:00</div></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><div>☀️ Lunch</div><div style="font-size:13px;color:var(--text-light)">12:30–14:30</div></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0"><div>🌙 Dinner</div><div style="font-size:13px;color:var(--text-light)">20:00–22:30</div></div>
+        </div>
+        <div style="margin-top:10px;padding:8px 12px;background:rgba(126,35,32,0.06);border-radius:var(--r-sm);font-size:11px;color:var(--text-mid)">24-hr ice cream & beverages available in lobby</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MADINAH -->
+  <div id="gs-madinah" style="display:none">
+    <div class="ground-banner"><h3>🌿 <span>Madinah Al-Munawwarah</span></h3><p>31 May → 03 June 2026 · 3 Nights · Near Masjid Al-Nabawi</p></div>
+    <div class="rep-grid">
+      <div class="rep-card"><div class="rc-role">Madinah Representative</div><div class="rc-name">Haji Saeed Ur Rahman</div><a href="https://wa.me/966557778888" target="_blank" class="btn btn-wa btn-sm">💬 WhatsApp</a></div>
+      <div class="rep-card"><div class="rc-role">Hotel Liaison</div><div class="rc-name">Br. Adeel Hassan</div><a href="https://wa.me/966553334444" target="_blank" class="btn btn-wa btn-sm">💬 WhatsApp</a></div>
+      <div class="rep-card"><div class="rc-role">Group Leader</div><div class="rc-name">Maulana Sahib</div><a href="https://wa.me/966554567890" target="_blank" class="btn btn-wa btn-sm">💬 WhatsApp</a></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="card"><div class="card-hd">🏨 Hotel</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="padding:12px;background:var(--bg);border-radius:var(--r-sm)"><div style="font-size:10px;color:var(--text-light);text-transform:uppercase">Hotel</div><div style="font-weight:700;margin-top:3px">Mias Al Medina</div></div>
+          <div style="padding:12px;background:var(--bg);border-radius:var(--r-sm)"><div style="font-size:10px;color:var(--text-light);text-transform:uppercase">Room</div><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--red)">521</div></div>
+          <div style="padding:12px;background:var(--bg);border-radius:var(--r-sm)"><div style="font-size:10px;color:var(--text-light);text-transform:uppercase">Room Type</div><div style="font-weight:700;margin-top:3px">Double Room</div></div>
+          <div style="padding:12px;background:var(--bg);border-radius:var(--r-sm)"><div style="font-size:10px;color:var(--text-light);text-transform:uppercase">Departure</div><div style="font-weight:700;margin-top:3px">03 June, 08:00</div></div>
+        </div>
+      </div>
+      <div class="card"><div class="card-hd">🍽️ Meals</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><div>🌅 Breakfast</div><div style="font-size:13px;color:var(--text-light)">06:00–09:30</div></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0"><div>🌙 Dinner</div><div style="font-size:13px;color:var(--text-light)">20:00–22:30</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MINA -->
+  <div id="gs-mina" style="display:none">
+    <div class="ground-banner"><h3>⛺ <span>Mina Camp</span> — Maktab A</h3><p>8th Zil Hajj → 13th Zil Hajj · Hajj Period</p></div>
+    <div class="rep-grid">
+      <div class="rep-card"><div class="rc-role">Mina Camp Representative</div><div class="rc-name">Haji Abdul Rauf</div><a href="https://wa.me/966556667777" target="_blank" class="btn btn-wa btn-sm">💬 WhatsApp</a></div>
+      <div class="rep-card"><div class="rc-role">Medical Coordinator</div><div class="rc-name">Dr. Shahid (On-site)</div><a href="https://wa.me/966550001111" target="_blank" class="btn btn-wa btn-sm">💬 WhatsApp</a></div>
+      <div class="rep-card"><div class="rc-role">Emergency</div><div class="rc-name">Saudi Civil Defence</div><a href="https://wa.me/966911" target="_blank" class="btn btn-sm" style="background:#C0392B;color:white">🚨 Emergency</a></div>
+    </div>
+    <div class="card">
+      <div class="card-hd">⛺ Camp Details</div>
+      <div class="camp-detail"><span class="cd-l">Maktab</span><span class="cd-v">Maktab A</span></div>
+      <div class="camp-detail"><span class="cd-l">Camp Number</span><span class="cd-v" style="font-family:'Playfair Display',serif;font-size:20px;color:var(--red)">KTN-MA-07</span></div>
+      <div class="camp-detail"><span class="cd-l">Location</span><span class="cd-v">Nearest to Jamarat — Street 12, Block A</span></div>
+      <div class="camp-detail"><span class="cd-l">Tent Number</span><span class="cd-v">Tent 14-B (4×4 meters, A/C, Carpeted)</span></div>
+      <div class="camp-detail"><span class="cd-l">Facilities</span><span class="cd-v">Private washrooms, Sofa beds, Pillows & Blankets</span></div>
+      <div class="camp-detail"><span class="cd-l">Meals</span><span class="cd-v">Full board via Muallim · B: 06:00 · L: 13:00 · D: 20:30</span></div>
+    </div>
+  </div>
+
+  <!-- ARAFAT -->
+  <div id="gs-arafat" style="display:none">
+    <div class="ground-banner"><h3>🌄 <span>Arafat</span> — Day of Arafah (9th Zil Hajj)</h3><p>The most sacred day of Hajj</p></div>
+    <div class="rep-grid">
+      <div class="rep-card"><div class="rc-role">Arafat Representative</div><div class="rc-name">Haji Muneer Siddiqui</div><a href="https://wa.me/966558889999" target="_blank" class="btn btn-wa btn-sm">💬 WhatsApp</a></div>
+      <div class="rep-card"><div class="rc-role">Transport Coordinator</div><div class="rc-name">Br. Riaz (Bus Team)</div><a href="https://wa.me/966552221111" target="_blank" class="btn btn-wa btn-sm">💬 WhatsApp</a></div>
+      <div class="rep-card"><div class="rc-role">Emergency</div><div class="rc-name">Saudi Civil Defence</div><a href="https://wa.me/966911" target="_blank" class="btn btn-sm" style="background:#C0392B;color:white">🚨 Emergency</a></div>
+    </div>
+    <div class="card">
+      <div class="card-hd">🌄 Camp Details</div>
+      <div class="camp-detail"><span class="cd-l">Camp Number</span><span class="cd-v" style="font-family:'Playfair Display',serif;font-size:20px;color:var(--red)">KTN-ARF-03</span></div>
+      <div class="camp-detail"><span class="cd-l">Location</span><span class="cd-v">Nimrah Zone, Plot 45 · Near Masjid Nimrah</span></div>
+      <div class="camp-detail"><span class="cd-l">Depart from Mina</span><span class="cd-v">9th Zil Hajj — After Fajr (group bus)</span></div>
+      <div class="camp-detail"><span class="cd-l">Waqoof Time</span><span class="cd-v">Dhuhr → Maghrib Prayer</span></div>
+      <div class="camp-detail"><span class="cd-l">Meals</span><span class="cd-v">Full board (Lunch + Dinner)</span></div>
+      <div class="camp-detail"><span class="cd-l">Depart to Muzdalifah</span><span class="cd-v">After Maghrib — Group buses arranged</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ ADMIN: DASHBOARD ══════════════════ -->
+<div class="page" id="page-adminDash">
+  <div class="ph"><h2>Admin Dashboard</h2><div class="ph-line"></div><p>KTN Hajj Group 2026 — Operations Overview</p></div>
+  <div class="stat-grid">
+    <div class="stat-card red-card"><div class="sc-label">Total Pilgrims</div><div class="sc-val">248</div><div class="sc-sub">Across all packages</div></div>
+    <div class="stat-card"><div class="sc-label">Active Packages</div><div class="sc-val">12</div><div class="sc-sub">Packages configured</div></div>
+    <div class="stat-card"><div class="sc-label">Payments Collected</div><div class="sc-val" style="color:var(--green)">$186K</div><div class="sc-sub" style="color:var(--green)">Total verified</div></div>
+    <div class="stat-card"><div class="sc-label">Outstanding</div><div class="sc-val" style="color:#C0392B">$2.4M</div><div class="sc-sub" style="color:#C86400">Remaining balance</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+    <div class="card">
+      <div class="card-hd">📄 Document Status</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:14px">All documents complete</span><span class="badge badge-green">142 pilgrims</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:14px">Partial documents</span><span class="badge badge-orange">71 pilgrims</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0"><span style="font-size:14px">Missing documents</span><span class="badge" style="background:rgba(192,57,43,0.1);color:#C0392B">35 pilgrims</span></div>
+      </div>
+      <button class="btn btn-outline btn-sm" style="margin-top:12px" onclick="showPage('adminDocuments',null)">View Document Status →</button>
+    </div>
+    <div class="card">
+      <div class="card-hd">💳 Payment Status</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:14px">Fully paid</span><span class="badge badge-green">38 pilgrims</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:14px">Partial payment</span><span class="badge badge-orange">168 pilgrims</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0"><span style="font-size:14px">Registration only</span><span class="badge badge-grey">42 pilgrims</span></div>
+      </div>
+      <button class="btn btn-outline btn-sm" style="margin-top:12px" onclick="showPage('adminPayments',null)">View Payment Details →</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd">👥 Recent Pilgrims</div>
+    <table class="tbl">
+      <thead><tr><th>Pilgrim ID</th><th>Name</th><th>Package</th><th>Room Types</th><th>Sales Rep</th><th>Docs</th><th>Payment</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:700;color:var(--red)">KN-2026-0042</td><td>Ahmad Raza</td><td>Pkg 06</td><td style="font-size:12px">MKK: Double / AZZ: Sharing / MDN: Double</td><td>Br. Imran</td><td><div class="doc-indicators"><div class="doc-ind ok" title="Passport"></div><div class="doc-ind ok" title="CNIC F"></div><div class="doc-ind ok" title="CNIC B"></div><div class="doc-ind miss" title="Photo"></div></div></td><td><span class="badge badge-orange">10%</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">KN-2026-0041</td><td>Bilal Ahmed</td><td>Pkg 06</td><td style="font-size:12px">MKK: Triple / AZZ: Sharing / MDN: Triple</td><td>Br. Imran</td><td><div class="doc-indicators"><div class="doc-ind ok"></div><div class="doc-ind ok"></div><div class="doc-ind miss"></div><div class="doc-ind miss"></div></div></td><td><span class="badge badge-green">50%</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">KN-2026-0040</td><td>Sara Khan</td><td>Pkg 10</td><td style="font-size:12px">MKK: Double / AZZ: Double / MDN: Double</td><td>Br. Ali</td><td><div class="doc-indicators"><div class="doc-ind ok"></div><div class="doc-ind ok"></div><div class="doc-ind ok"></div><div class="doc-ind ok"></div></div></td><td><span class="badge badge-green">100%</span></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">KN-2026-0039</td><td>Hassan Mirza</td><td>Pkg 07</td><td style="font-size:12px">MKK: Quad / AZZ: Sharing / MDN: Quad</td><td>Br. Usman</td><td><div class="doc-indicators"><div class="doc-ind ok"></div><div class="doc-ind miss"></div><div class="doc-ind miss"></div><div class="doc-ind miss"></div></div></td><td><span class="badge badge-orange">25%</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════ ADMIN: PILGRIMS ══════════════════ -->
+<div class="page" id="page-adminPilgrims">
+  <div class="ph"><h2>Pilgrim Management</h2><div class="ph-line"></div><p>View, filter and manage all registered pilgrims</p></div>
+  <div class="filter-bar">
+    <select><option>All Packages</option><option>Package 06</option><option>Package 07</option><option>Package 10</option></select>
+    <select><option>All Room Types</option><option>Double</option><option>Triple</option><option>Quad</option><option>Sharing</option></select>
+    <select><option>All Maktabs</option><option>Maktab A</option><option>Maktab B</option><option>Maktab C</option></select>
+    <select><option>Payment Status</option><option>Fully Paid</option><option>Partial</option><option>Registration Only</option></select>
+    <select><option>Document Status</option><option>Complete</option><option>Partial</option><option>Missing</option></select>
+    <select><option>All Sales Reps</option><option>Br. Imran</option><option>Br. Ali</option><option>Br. Usman</option></select>
+    <input type="text" placeholder="🔍 Search pilgrim...">
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <table class="tbl">
+      <thead><tr><th>Pilgrim ID</th><th>Name</th><th>Package</th><th>Makkah</th><th>Azizia</th><th>Madinah</th><th>Maktab</th><th>Bus</th><th>Sales Rep</th><th>Docs</th><th>Payment</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:700;color:var(--red)">KN-2026-0042</td><td><div style="font-weight:700">Ahmad Raza</div><div style="font-size:11px;color:var(--text-light)">2 pilgrims</div></td><td>Pkg 06</td><td><span style="font-size:12px;font-weight:700">Double</span></td><td><span style="font-size:12px;font-weight:700">Sharing</span></td><td><span style="font-size:12px;font-weight:700">Double</span></td><td>A</td><td>Bus 1</td><td>Br. Imran</td><td><div class="doc-indicators"><div class="doc-ind ok"></div><div class="doc-ind ok"></div><div class="doc-ind ok"></div><div class="doc-ind miss"></div></div></td><td><span class="badge badge-orange">10%</span></td><td><button class="btn btn-grey btn-sm" onclick="showToast('Pilgrim','Opening pilgrim profile...')">View</button></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">KN-2026-0041</td><td><div style="font-weight:700">Bilal Ahmed</div><div style="font-size:11px;color:var(--text-light)">1 pilgrim</div></td><td>Pkg 06</td><td><span style="font-size:12px;font-weight:700">Triple</span></td><td><span style="font-size:12px;font-weight:700">Sharing</span></td><td><span style="font-size:12px;font-weight:700">Triple</span></td><td>A</td><td>Bus 1</td><td>Br. Imran</td><td><div class="doc-indicators"><div class="doc-ind ok"></div><div class="doc-ind ok"></div><div class="doc-ind miss"></div><div class="doc-ind miss"></div></div></td><td><span class="badge badge-green">50%</span></td><td><button class="btn btn-grey btn-sm" onclick="showToast('Pilgrim','Opening pilgrim profile...')">View</button></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">KN-2026-0040</td><td><div style="font-weight:700">Sara Khan</div><div style="font-size:11px;color:var(--text-light)">1 pilgrim</div></td><td>Pkg 10</td><td><span style="font-size:12px;font-weight:700">Double</span></td><td><span style="font-size:12px;font-weight:700">Double</span></td><td><span style="font-size:12px;font-weight:700">Double</span></td><td>B</td><td>Bus 2</td><td>Br. Ali</td><td><div class="doc-indicators"><div class="doc-ind ok"></div><div class="doc-ind ok"></div><div class="doc-ind ok"></div><div class="doc-ind ok"></div></div></td><td><span class="badge badge-green">100%</span></td><td><button class="btn btn-grey btn-sm" onclick="showToast('Pilgrim','Opening pilgrim profile...')">View</button></td></tr>
+        <tr><td style="font-weight:700;color:var(--red)">KN-2026-0039</td><td><div style="font-weight:700">Hassan Mirza</div><div style="font-size:11px;color:var(--text-light)">4 pilgrims</div></td><td>Pkg 07</td><td><span style="font-size:12px;font-weight:700">Quad</span></td><td><span style="font-size:12px;font-weight:700">Sharing</span></td><td><span style="font-size:12px;font-weight:700">Quad</span></td><td>A</td><td>Bus 3</td><td>Br. Usman</td><td><div class="doc-indicators"><div class="doc-ind ok"></div><div class="doc-ind miss"></div><div class="doc-ind miss"></div><div class="doc-ind miss"></div></div></td><td><span class="badge badge-orange">25%</span></td><td><button class="btn btn-grey btn-sm" onclick="showToast('Pilgrim','Opening pilgrim profile...')">View</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px">
+    <button class="btn btn-red" onclick="showToast('Add Pilgrim','Opening add pilgrim form...')">+ Add Pilgrim</button>
+  </div>
+</div>
+
+<!-- ══════════════════ ADMIN: PACKAGES ══════════════════ -->
+<div class="page" id="page-adminPackages">
+  <div class="ph"><h2>Package Management</h2><div class="ph-line"></div><p>Create and manage Hajj packages</p></div>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+    <button class="btn btn-red" onclick="document.getElementById('addPkgForm').style.display=document.getElementById('addPkgForm').style.display==='none'?'block':'none'">+ Create New Package</button>
+  </div>
+  <div class="card" id="addPkgForm" style="display:none">
+    <div class="card-hd">📦 New Package</div>
+    <div class="form-row">
+      <div class="fg"><label>Package Number</label><input placeholder="e.g. 06"></div>
+      <div class="fg"><label>Package Name</label><input placeholder="e.g. 17 Days Economy Plus"></div>
+      <div class="fg"><label>Maktab Type</label><select><option>Maktab A</option><option>Maktab B</option><option>Maktab C</option></select></div>
+      <div class="fg"><label>Qurbani</label><select><option>Not Included</option><option>Included</option></select></div>
+    </div>
+    <div class="card-hd" style="margin-top:8px">🏨 Hotels & Room Types Per Location</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;padding:14px;background:var(--bg);border-radius:var(--r-sm)">
+        <div class="fg" style="margin:0"><label>Makkah Hotel</label><input placeholder="Hotel name"></div>
+        <div class="fg" style="margin:0"><label>Nights</label><input placeholder="e.g. 3" type="number"></div>
+        <div class="fg" style="margin:0"><label>Room Type</label><select><option>Double</option><option>Triple</option><option>Quad</option><option>Sharing</option></select></div>
+        <div class="fg" style="margin:0"><label>Price / Person</label><input placeholder="USD"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;padding:14px;background:var(--bg);border-radius:var(--r-sm)">
+        <div class="fg" style="margin:0"><label>Azizia Hotel</label><input placeholder="Hotel name"></div>
+        <div class="fg" style="margin:0"><label>Nights</label><input placeholder="e.g. 10" type="number"></div>
+        <div class="fg" style="margin:0"><label>Room Type</label><select><option>Sharing</option><option>Double</option><option>Triple</option><option>Quad</option></select></div>
+        <div class="fg" style="margin:0"><label>Price / Person</label><input placeholder="USD"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;padding:14px;background:var(--bg);border-radius:var(--r-sm)">
+        <div class="fg" style="margin:0"><label>Madinah Hotel</label><input placeholder="Hotel name"></div>
+        <div class="fg" style="margin:0"><label>Nights</label><input placeholder="e.g. 3" type="number"></div>
+        <div class="fg" style="margin:0"><label>Room Type</label><select><option>Double</option><option>Triple</option><option>Quad</option><option>Sharing</option></select></div>
+        <div class="fg" style="margin:0"><label>Price / Person</label><input placeholder="USD"></div>
+      </div>
+    </div>
+    <div class="fg"><label>Package Description</label><textarea placeholder="Describe this package..."></textarea></div>
+    <div style="display:flex;justify-content:flex-end;gap:10px">
+      <button class="btn btn-grey" onclick="document.getElementById('addPkgForm').style.display='none'">Cancel</button>
+      <button class="btn btn-red" onclick="showToast('Package Created','New package saved successfully.')">Save Package</button>
+    </div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <table class="tbl">
+      <thead><tr><th>#</th><th>Package Name</th><th>Maktab</th><th>Makkah Hotel</th><th>Azizia Hotel</th><th>Madinah Hotel</th><th>Qurbani</th><th>Pilgrims</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:900;color:var(--red)">06</td><td>17 Days Package 06</td><td><span class="badge badge-red">A</span></td><td><div style="font-size:13px">Movenpick / Swissotel</div><div style="font-size:11px;color:var(--text-light)">Double · 3 nights</div></td><td><div style="font-size:13px">Azizia Premium</div><div style="font-size:11px;color:var(--text-light)">Sharing · 10 nights</div></td><td><div style="font-size:13px">Mias Al Medina</div><div style="font-size:11px;color:var(--text-light)">Double · 3 nights</div></td><td><span class="badge badge-grey">Not Incl.</span></td><td>84</td><td><button class="btn btn-grey btn-sm" onclick="showToast('Edit Package','Opening Package 06 for editing...')">Edit</button></td></tr>
+        <tr><td style="font-weight:900;color:var(--red)">07</td><td>17 Days Package 07</td><td><span class="badge badge-red">A</span></td><td><div style="font-size:13px">Fairmont Makkah</div><div style="font-size:11px;color:var(--text-light)">Triple · 3 nights</div></td><td><div style="font-size:13px">Azizia Premium</div><div style="font-size:11px;color:var(--text-light)">Sharing · 10 nights</div></td><td><div style="font-size:13px">Movenpick Madinah</div><div style="font-size:11px;color:var(--text-light)">Triple · 3 nights</div></td><td><span class="badge badge-grey">Not Incl.</span></td><td>52</td><td><button class="btn btn-grey btn-sm" onclick="showToast('Edit Package','Opening Package 07 for editing...')">Edit</button></td></tr>
+        <tr><td style="font-weight:900;color:var(--red)">10</td><td>21 Days Premium</td><td><span class="badge badge-red">A</span></td><td><div style="font-size:13px">Hilton Makkah</div><div style="font-size:11px;color:var(--text-light)">Double · 5 nights</div></td><td><div style="font-size:13px">Azizia Premier</div><div style="font-size:11px;color:var(--text-light)">Double · 10 nights</div></td><td><div style="font-size:13px">Anwar Al Madinah</div><div style="font-size:11px;color:var(--text-light)">Double · 6 nights</div></td><td><span class="badge badge-green">Included</span></td><td>36</td><td><button class="btn btn-grey btn-sm" onclick="showToast('Edit Package','Opening Package 10 for editing...')">Edit</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════ ADMIN: PAYMENTS ══════════════════ -->
+<div class="page" id="page-adminPayments">
+  <div class="ph"><h2>Payment Management</h2><div class="ph-line"></div><p>Track all pilgrim payments and milestones</p></div>
+  <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px">
+    <div class="stat-card red-card"><div class="sc-label">Total Expected</div><div class="sc-val">$2.61M</div></div>
+    <div class="stat-card"><div class="sc-label">Total Received</div><div class="sc-val" style="color:var(--green)">$186K</div><div class="sc-sub" style="color:var(--green)">Verified payments</div></div>
+    <div class="stat-card"><div class="sc-label">Outstanding</div><div class="sc-val" style="color:#C0392B">$2.42M</div><div class="sc-sub" style="color:#C86400">Awaiting payment</div></div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <table class="tbl">
+      <thead><tr><th>Pilgrim</th><th>Package</th><th>Total Due</th><th>Paid</th><th>Remaining</th><th>Last Payment</th><th>Status</th><th>Receipt</th></tr></thead>
+      <tbody>
+        <tr><td><div style="font-weight:700">Ahmad Raza</div><div style="font-size:11px;color:var(--text-light)">KN-2026-0042</div></td><td>Pkg 06</td><td>$10,500</td><td style="color:var(--green);font-weight:700">$1,000</td><td style="color:#C0392B;font-weight:700">$9,500</td><td>10 Nov 2025</td><td><span class="badge badge-orange">10%</span></td><td><button class="btn btn-grey btn-sm" onclick="showToast('Receipt','Viewing payment receipt...')">View</button></td></tr>
+        <tr><td><div style="font-weight:700">Bilal Ahmed</div><div style="font-size:11px;color:var(--text-light)">KN-2026-0041</div></td><td>Pkg 06</td><td>$9,400</td><td style="color:var(--green);font-weight:700">$4,700</td><td style="color:#C86400;font-weight:700">$4,700</td><td>15 Jan 2026</td><td><span class="badge badge-green">50%</span></td><td><button class="btn btn-grey btn-sm" onclick="showToast('Receipt','Viewing payment receipt...')">View</button></td></tr>
+        <tr><td><div style="font-weight:700">Sara Khan</div><div style="font-size:11px;color:var(--text-light)">KN-2026-0040</div></td><td>Pkg 10</td><td>$12,800</td><td style="color:var(--green);font-weight:700">$12,800</td><td style="color:var(--green);font-weight:700">$0</td><td>01 Feb 2026</td><td><span class="badge badge-green">100% ✓</span></td><td><button class="btn btn-grey btn-sm" onclick="showToast('Receipt','Viewing payment receipts...')">View</button></td></tr>
+        <tr><td><div style="font-weight:700">Hassan Mirza</div><div style="font-size:11px;color:var(--text-light)">KN-2026-0039</div></td><td>Pkg 07</td><td>$9,400</td><td style="color:var(--green);font-weight:700">$2,350</td><td style="color:#C0392B;font-weight:700">$7,050</td><td>20 Dec 2025</td><td><span class="badge badge-orange">25%</span></td><td><button class="btn btn-grey btn-sm" onclick="showToast('Receipt','Viewing payment receipt...')">View</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════ ADMIN: DOCUMENTS ══════════════════ -->
+<div class="page" id="page-adminDocuments">
+  <div class="ph"><h2>Document Tracking</h2><div class="ph-line"></div><p>Overview of document uploads across all pilgrims</p></div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <table class="tbl">
+      <thead><tr><th>Pilgrim</th><th>Package</th><th>Passport</th><th>CNIC Front</th><th>CNIC Back</th><th>Photo</th><th>Vaccination</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><div style="font-weight:700">Ahmad Raza</div><div style="font-size:11px;color:var(--text-light)">KN-2026-0042</div></td><td>Pkg 06</td><td><span style="color:var(--green);font-size:16px">✓</span></td><td><span style="color:var(--green);font-size:16px">✓</span></td><td><span style="color:var(--green);font-size:16px">✓</span></td><td><span style="color:#C0392B;font-size:16px">✗</span></td><td><span style="color:var(--grey);font-size:16px">—</span></td><td><span class="badge badge-orange">3/4</span></td></tr>
+        <tr><td><div style="font-weight:700">Fatima Raza</div><div style="font-size:11px;color:var(--text-light)">KN-2026-0042 P2</div></td><td>Pkg 06</td><td><span style="color:var(--green);font-size:16px">✓</span></td><td><span style="color:var(--green);font-size:16px">✓</span></td><td><span style="color:#C0392B;font-size:16px">✗</span></td><td><span style="color:#C0392B;font-size:16px">✗</span></td><td><span style="color:var(--grey);font-size:16px">—</span></td><td><span class="badge" style="background:rgba(192,57,43,0.1);color:#C0392B">2/4</span></td></tr>
+        <tr><td><div style="font-weight:700">Bilal Ahmed</div><div style="font-size:11px;color:var(--text-light)">KN-2026-0041</div></td><td>Pkg 06</td><td><span style="color:var(--green);font-size:16px">✓</span></td><td><span style="color:var(--green);font-size:16px">✓</span></td><td><span style="color:#C0392B;font-size:16px">✗</span></td><td><span style="color:#C0392B;font-size:16px">✗</span></td><td><span style="color:var(--grey);font-size:16px">—</span></td><td><span class="badge" style="background:rgba(192,57,43,0.1);color:#C0392B">2/4</span></td></tr>
+        <tr><td><div style="font-weight:700">Sara Khan</div><div style="font-size:11px;color:var(--text-light)">KN-2026-0040</div></td><td>Pkg 10</td><td><span style="color:var(--green);font-size:16px">✓</span></td><td><span style="color:var(--green);font-size:16px">✓</span></td><td><span style="color:var(--green);font-size:16px">✓</span></td><td><span style="color:var(--green);font-size:16px">✓</span></td><td><span style="color:var(--green);font-size:16px">✓</span></td><td><span class="badge badge-green">5/5 ✓</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════ ADMIN: BUS & GROUPS ══════════════════ -->
+<div class="page" id="page-adminBus">
+  <div class="ph"><h2>Bus & Group Assignment</h2><div class="ph-line"></div><p>Assign pilgrims to buses and groups</p></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+    <div class="card">
+      <div class="card-hd">🚌 Bus 1</div>
+      <div style="font-size:12px;color:var(--text-light);margin-bottom:12px">Package 06 & 07 · Group A</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
+        <div style="padding:8px 12px;background:var(--bg);border-radius:var(--r-sm);font-size:13px;display:flex;justify-content:space-between"><span>Ahmad Raza</span><span style="color:var(--text-light)">Pkg 06</span></div>
+        <div style="padding:8px 12px;background:var(--bg);border-radius:var(--r-sm);font-size:13px;display:flex;justify-content:space-between"><span>Bilal Ahmed</span><span style="color:var(--text-light)">Pkg 06</span></div>
+        <div style="padding:8px 12px;background:var(--bg);border-radius:var(--r-sm);font-size:13px;display:flex;justify-content:space-between"><span>Hassan Mirza</span><span style="color:var(--text-light)">Pkg 07</span></div>
+      </div>
+      <div style="font-size:12px;color:var(--text-light)">3 / 40 seats filled</div>
+    </div>
+    <div class="card">
+      <div class="card-hd">🚌 Bus 2</div>
+      <div style="font-size:12px;color:var(--text-light);margin-bottom:12px">Package 10 · Group B</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
+        <div style="padding:8px 12px;background:var(--bg);border-radius:var(--r-sm);font-size:13px;display:flex;justify-content:space-between"><span>Sara Khan</span><span style="color:var(--text-light)">Pkg 10</span></div>
+      </div>
+      <div style="font-size:12px;color:var(--text-light)">1 / 40 seats filled</div>
+    </div>
+    <div class="card">
+      <div class="card-hd">+ Add New Bus/Group</div>
+      <div class="fg"><label>Bus Number</label><input placeholder="e.g. Bus 4"></div>
+      <div class="fg"><label>Group Name</label><input placeholder="e.g. Group C"></div>
+      <div class="fg"><label>Packages</label><input placeholder="e.g. Pkg 08, Pkg 09"></div>
+      <button class="btn btn-red" style="width:100%" onclick="showToast('Bus Created','New bus group added successfully.')">Create Bus Group</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd">📋 Assign Pilgrim to Bus</div>
+    <div class="form-row" style="gap:12px;align-items:flex-end">
+      <div class="fg" style="margin:0"><label>Pilgrim</label><select><option>Select pilgrim...</option><option>KN-2026-0042 — Ahmad Raza</option><option>KN-2026-0041 — Bilal Ahmed</option><option>KN-2026-0040 — Sara Khan</option></select></div>
+      <div class="fg" style="margin:0"><label>Bus</label><select><option>Bus 1</option><option>Bus 2</option><option>Bus 3</option></select></div>
+      <div class="fg" style="margin:0"><label>Group</label><select><option>Group A</option><option>Group B</option><option>Group C</option></select></div>
+      <button class="btn btn-red" style="height:46px" onclick="showToast('Assigned','Pilgrim bus assignment updated.')">Assign</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ ADMIN: EXPORT ══════════════════ -->
+<div class="page" id="page-adminExport">
+  <div class="ph"><h2>Excel Export</h2><div class="ph-line"></div><p>Export pilgrim and package data to Excel/CSV</p></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="card">
+      <div class="card-hd">👥 Pilgrim Information</div>
+      <p style="font-size:14px;color:var(--text-mid);margin-bottom:14px">Export full pilgrim records including personal details, package, room types, flight info, and sales rep.</p>
+      <div class="fg"><label>Filter by Package</label><select><option>All Packages</option><option>Package 06</option><option>Package 07</option><option>Package 10</option></select></div>
+      <div class="fg"><label>Filter by Maktab</label><select><option>All Maktabs</option><option>Maktab A</option><option>Maktab B</option></select></div>
+      <button class="btn btn-red" onclick="exportCSV('pilgrims')">📥 Export Pilgrims (Excel)</button>
+    </div>
+    <div class="card">
+      <div class="card-hd">💳 Payment Status</div>
+      <p style="font-size:14px;color:var(--text-mid);margin-bottom:14px">Export payment history, milestones, amounts paid, outstanding balances per pilgrim.</p>
+      <div class="fg"><label>Filter by Status</label><select><option>All</option><option>Fully Paid</option><option>Partial</option><option>Pending</option></select></div>
+      <div class="fg"><label>Date Range</label><input type="date"></div>
+      <button class="btn btn-red" onclick="exportCSV('payments')">📥 Export Payments (Excel)</button>
+    </div>
+    <div class="card">
+      <div class="card-hd">📄 Document Status</div>
+      <p style="font-size:14px;color:var(--text-mid);margin-bottom:14px">Export document upload status for all pilgrims showing missing vs. complete documents.</p>
+      <div class="fg"><label>Show</label><select><option>All Pilgrims</option><option>Missing Documents</option><option>Complete</option></select></div>
+      <br>
+      <button class="btn btn-red" onclick="exportCSV('documents')">📥 Export Documents (Excel)</button>
+    </div>
+    <div class="card">
+      <div class="card-hd">📦 Package Information</div>
+      <p style="font-size:14px;color:var(--text-mid);margin-bottom:14px">Export all package details including hotels, room types per location, pricing, and maktab info.</p>
+      <div class="fg"><label>Include</label><select><option>All Packages</option><option>Active Only</option></select></div>
+      <br>
+      <button class="btn btn-red" onclick="exportCSV('packages')">📥 Export Packages (Excel)</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd">📊 Full Report</div>
+    <p style="font-size:14px;color:var(--text-mid);margin-bottom:16px">Export a comprehensive report including pilgrims, payments, documents, and bus assignments in one file.</p>
+    <button class="btn btn-red" onclick="exportCSV('full')">📥 Export Full Report (Excel)</button>
+  </div>
+</div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /appShell -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"><div style="font-size:20px" id="toastIcon">✅</div><div><h5 id="toastTitle"></h5><p id="toastMsg"></p></div></div>
+
+<!-- WA FLOAT -->
+<div class="wa-float" onclick="showToast('WhatsApp Support','Opening WhatsApp: +92 300 0000000')">💬</div>
+
+<script>
+// ═══════════════ DATA ═══════════════
+const pilgrims = [
+  { id:'KN-2026-0042', name:'Ahmad Raza', pkg:'06', makkahRoom:'Double', aziziaRoom:'Sharing', madinahRoom:'Double', maktab:'A', bus:'Bus 1', salesRep:'Br. Imran', paid:1000, total:10500, docs:{pp:1,cf:1,cb:1,ph:0} },
+  { id:'KN-2026-0041', name:'Bilal Ahmed', pkg:'06', makkahRoom:'Triple', aziziaRoom:'Sharing', madinahRoom:'Triple', maktab:'A', bus:'Bus 1', salesRep:'Br. Imran', paid:4700, total:9400, docs:{pp:1,cf:1,cb:0,ph:0} },
+  { id:'KN-2026-0040', name:'Sara Khan', pkg:'10', makkahRoom:'Double', aziziaRoom:'Double', madinahRoom:'Double', maktab:'B', bus:'Bus 2', salesRep:'Br. Ali', paid:12800, total:12800, docs:{pp:1,cf:1,cb:1,ph:1} },
+  { id:'KN-2026-0039', name:'Hassan Mirza', pkg:'07', makkahRoom:'Quad', aziziaRoom:'Sharing', madinahRoom:'Quad', maktab:'A', bus:'Bus 3', salesRep:'Br. Usman', paid:2350, total:9400, docs:{pp:1,cf:0,cb:0,ph:0} },
+];
+
+// ═══════════════ LOGIN ═══════════════
+let currentMode = 'pilgrim';
+let notifOpen = false;
+
+function setLoginMode(mode, el) {
+  currentMode = mode;
+  document.querySelectorAll('.login-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('loginPilgrimFields').style.display = mode==='pilgrim'?'block':'none';
+  document.getElementById('loginAdminFields').style.display = mode==='admin'?'block':'none';
+}
+
+function doLogin() {
+  const lp = document.getElementById('loginPage');
+  const shell = document.getElementById('appShell');
+  lp.classList.add('hidden');
+  shell.classList.add('active');
+  setTimeout(()=>lp.style.display='none', 600);
+  if (currentMode === 'admin') {
+    document.getElementById('navPilgrim').style.display = 'none';
+    document.getElementById('navAdmin').style.display = 'block';
+    document.getElementById('topbarMode').style.display = 'block';
+    document.getElementById('sbMode').textContent = 'Admin Panel';
+    document.getElementById('sbName').textContent = 'Administrator';
+    document.getElementById('sbPkg').textContent = 'Full Access';
+    document.getElementById('tbAvatar').textContent = 'AD';
+    showAdminPage('adminDash');
+    showToast('Welcome Admin','KTN Admin Panel — Full access granted.');
+  } else {
+    showToast('Assalamu Alaikum!','Welcome Ahmad Raza — Hajj Mubarak! 🕋');
+  }
+}
+
+function doLogout() {
+  const shell = document.getElementById('appShell');
+  const lp = document.getElementById('loginPage');
+  shell.classList.remove('active');
+  lp.style.display = 'flex';
+  setTimeout(()=>lp.classList.remove('hidden'), 10);
+  // reset
+  document.getElementById('navPilgrim').style.display = 'block';
+  document.getElementById('navAdmin').style.display = 'none';
+  document.getElementById('topbarMode').style.display = 'none';
+  document.getElementById('sbMode').textContent = 'Pilgrim Portal';
+  document.getElementById('sbName').textContent = 'Ahmad Raza';
+  document.getElementById('sbPkg').textContent = 'Package 06 · Double · 2 Pilgrims';
+  document.getElementById('tbAvatar').textContent = 'AR';
+  currentMode = 'pilgrim';
+  document.querySelectorAll('.login-tab').forEach((t,i)=>{t.classList.toggle('active',i===0);});
+  document.getElementById('loginPilgrimFields').style.display='block';
+  document.getElementById('loginAdminFields').style.display='none';
+}
+
+// ═══════════════ NAVIGATION ═══════════════
+const pageTitles = {
+  dashboard:'Dashboard', package:'My Package', payment:'Payments & Invoice',
+  details:'Pilgrim Details', documents:'Documents', visa:'Visa & Tickets',
+  ground:'Ground Information',
+  adminDash:'Admin Dashboard', adminPilgrims:'Pilgrim Management',
+  adminPackages:'Package Management', adminPayments:'Payment Management',
+  adminDocuments:'Document Tracking', adminBus:'Bus & Groups',
+  adminExport:'Excel Export'
+};
+
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg = document.getElementById('page-'+id);
+  if (pg) pg.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('topbarTitle').textContent = pageTitles[id] || id;
+}
+
+function showAdminPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg = document.getElementById('page-'+id);
+  if (pg) pg.classList.add('active');
+  document.querySelectorAll('#navAdmin .nav-item').forEach(n=>{
+    n.classList.toggle('active', n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'"));
+  });
+  document.getElementById('topbarTitle').textContent = pageTitles[id] || id;
+}
+
+// ═══════════════ LOCATION TABS ═══════════════
+function switchLoc(loc, el) {
+  ['makkah','azizia','madinah','mina','arafat'].forEach(l=>{
+    const gs = document.getElementById('gs-'+l);
+    if(gs) gs.style.display = l===loc?'block':'none';
+  });
+  if (el) {
+    document.querySelectorAll('.loc-tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+  } else {
+    document.querySelectorAll('.loc-tab').forEach(t=>{
+      t.classList.toggle('active', t.textContent.toLowerCase().includes(loc.substring(0,3)));
+    });
+  }
+}
+
+// ═══════════════ PILGRIM TABS ═══════════════
+function switchPilgrimTab(num, el) {
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('pf1').style.display = num===1?'block':'none';
+  document.getElementById('pf2').style.display = num===2?'block':'none';
+}
+
+// ═══════════════ DOCUMENT UPLOAD ═══════════════
+function markUploaded(item) {
+  item.classList.add('uploaded');
+  const statusEl = item.querySelector('.di-status');
+  if(statusEl) statusEl.textContent = '✓ Uploaded';
+  const inp = item.querySelector('input');
+  if(inp) inp.click();
+  showToast('Document Uploaded','Document saved successfully.');
+}
+
+// ═══════════════ PACKAGE CONFIRM ═══════════════
+function confirmPackage() {
+  const box = document.getElementById('confirmBox');
+  box.style.background = 'rgba(30,107,58,0.08)';
+  box.innerHTML = `<span style="font-size:32px">✅</span><div style="flex:1"><p style="font-size:14px;color:var(--text-mid);line-height:1.6"><strong>Package Confirmed!</strong><br>You have confirmed Package 06 on ${new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}. KTN team will be in touch shortly.</p></div>`;
+  showToast('Package Confirmed!','Your selection has been recorded. Hajj Mubarak!');
+}
+
+// ═══════════════ EXPORT CSV ═══════════════
+function exportCSV(type) {
+  let headers, rows;
+  if (type === 'pilgrims') {
+    headers = ['ID','Name','Package','Makkah Room','Azizia Room','Madinah Room','Maktab','Bus','Sales Rep','Paid USD','Total USD','Remaining USD'];
+    rows = pilgrims.map(p=>[p.id,p.name,'Pkg '+p.pkg,p.makkahRoom,p.aziziaRoom,p.madinahRoom,p.maktab,p.bus,p.salesRep,p.paid,p.total,p.total-p.paid]);
+  } else if (type === 'payments') {
+    headers = ['ID','Name','Total USD','Paid USD','Remaining USD','Status'];
+    rows = pilgrims.map(p=>{
+      const pct = Math.round((p.paid/p.total)*100);
+      return [p.id,p.name,p.total,p.paid,p.total-p.paid,pct+'%'];
+    });
+  } else if (type === 'documents') {
+    headers = ['ID','Name','Package','Passport','CNIC Front','CNIC Back','Photo','Status'];
+    rows = pilgrims.map(p=>{
+      const total = Object.values(p.docs).reduce((a,b)=>a+b,0);
+      return [p.id,p.name,'Pkg '+p.pkg,p.docs.pp?'Yes':'No',p.docs.cf?'Yes':'No',p.docs.cb?'Yes':'No',p.docs.ph?'Yes':'No',total+'/4'];
+    });
+  } else if (type === 'packages') {
+    headers = ['Package','Maktab','Makkah Hotel','Azizia Hotel','Madinah Hotel','Qurbani','Pilgrims'];
+    rows = [['06','A','Movenpick','Azizia Premium','Mias Al Medina','Not Included',84],['07','A','Fairmont','Azizia Premium','Movenpick','Not Included',52],['10','A','Hilton','Azizia Premier','Anwar Al Madinah','Included',36]];
+  } else {
+    headers = ['ID','Name','Package','Makkah','Azizia','Madinah','Maktab','Bus','Paid','Total','Docs'];
+    rows = pilgrims.map(p=>{
+      const docTotal = Object.values(p.docs).reduce((a,b)=>a+b,0);
+      return [p.id,p.name,'Pkg '+p.pkg,p.makkahRoom,p.aziziaRoom,p.madinahRoom,p.maktab,p.bus,p.paid,p.total,docTotal+'/4'];
+    });
+  }
+  const csv = [headers.join(','), ...rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(','))].join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'KTN_'+type+'_'+new Date().toISOString().substring(0,10)+'.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Export Ready','File downloaded successfully.');
+}
+
+// ═══════════════ TOAST ═══════════════
+let toastTimer;
+function showToast(title, msg, isErr) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMsg').textContent = msg;
+  document.getElementById('toastIcon').textContent = isErr ? '⚠️' : '✅';
+  t.style.borderLeftColor = isErr ? '#C0392B' : 'var(--red)';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 4000);
+}
+
+// ═══════════════ NOTIF PANEL ═══════════════
+function toggleNotif() {
+  notifOpen = !notifOpen;
+  const panel = document.getElementById('notifPanel');
+  panel.classList.toggle('open', notifOpen);
+}
+document.addEventListener('click', e => {
+  if (notifOpen && !e.target.closest('#notifPanel') && !e.target.closest('.tb-icon')) {
+    notifOpen = false;
+    document.getElementById('notifPanel').classList.remove('open');
+  }
+});
+
+// Enter key on login
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('loginPage').style.display !== 'none') doLogin();
+});
+</script>
+</body>
+</html>
